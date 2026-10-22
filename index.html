@@ -702,6 +702,118 @@ select.pede{border-color:var(--amber)!important;background:#FFFBF2}
   .hello{font-size:28px}
 }
 @media(max-width:600px){ .tiles{grid-template-columns:1fr 1fr 1fr;gap:8px}.tile{padding:12px}.tile .v{font-size:24px}.tile .l{font-size:12px}.top-title{font-size:17px} }
+/* ---------- MENU DE ETAPAS (stepper) ---------- */
+.stp{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 2px;margin-bottom:14px}
+.stp-i{flex:1;min-width:150px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;text-align:left;font-family:inherit;position:relative;transition:.15s}
+.stp-i:hover{border-color:var(--red-line)}
+.stp-n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--tile);color:var(--muted);border:1.5px solid var(--line2);flex:none}
+.stp-t{min-width:0}.stp-t b{display:block;font-size:13px;color:var(--ink);line-height:1.25}.stp-t small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.stp-i.ok .stp-n{background:var(--green);border-color:var(--green);color:#fff}
+.stp-i.atual .stp-n{border-color:var(--red);color:var(--red)}
+.stp-i.on{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}.stp-i.on .stp-n{background:var(--red);border-color:var(--red);color:#fff}
+.stp-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px 22px}
+.stp-card-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.stp-card-h .k{font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--red)}
+.stp-card-h h2{font-size:20px;font-weight:800;color:var(--ink);margin:2px 0 0}
+.stp-card-h p{color:var(--muted);font-size:13.5px;margin-top:4px}
+.stp-card-h .chip{margin-left:auto}
+.stp-foot{display:flex;gap:8px;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.stp-foot .dir{margin-left:auto;display:flex;gap:8px}
+.xp-fase{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 6px}
+.xp-fase label{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;background:#fff}
+.xp-fase input{accent-color:var(--red)}
+.xp-fase label.on{border-color:var(--red);background:var(--red-soft)}
+.xp-fase b{display:block;font-size:15px;color:var(--ink)}.xp-fase small{color:var(--muted);font-size:12px}
+.xp-link{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1.5px solid var(--red-line);background:var(--red-soft);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.xp-link .u{flex:1;min-width:200px}.xp-link .u b{display:block;color:var(--ink)}.xp-link .u small{display:block;color:var(--muted);font-size:12px;word-break:break-all}
+.xp-fb{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.xp-fb-h{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#fff}
+.xp-fb-h b{color:var(--ink)}.xp-fb-h small{color:var(--muted);font-size:12px;display:block}.xp-fb-h .chip{margin-left:auto}
+.xp-fb-b{padding:14px;border-top:1px solid var(--line);background:var(--tile);display:grid;grid-template-columns:240px 1fr;gap:16px}
+@media(max-width:900px){.xp-fb-b{grid-template-columns:1fr}}
+.xp-fil b{display:block;font-size:12.5px;margin-bottom:6px;color:var(--ink)}
+.xp-fil label{display:flex;gap:8px;align-items:center;font-size:13px;padding:5px 0;cursor:pointer}
+.xp-fil input{accent-color:var(--red)}
+.xp-fil .dis{opacity:.5;cursor:not-allowed}
+.xp-fb-b textarea{width:100%;min-height:300px;border:1.5px solid var(--line2);border-radius:12px;padding:12px;font:13.5px/1.55 inherit;font-family:inherit;background:#fff;resize:vertical}
+/* ---------- CONTROLE DE ENVIO ---------- */
+.en-plac{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 14px}
+@media(max-width:900px){.en-plac{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.en-plac div{background:var(--tile);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.en-plac b{display:block;font-size:24px;font-weight:800;color:var(--ink);line-height:1.15}.en-plac small{color:var(--muted);font-size:12.5px}
+.en-plac .hot b{color:var(--red)}.en-plac .ok b{color:var(--green)}.en-plac .warn b{color:#B7791F}
+.en-t td{vertical-align:middle}.en-t td small{display:block;color:var(--muted);font-size:11.5px}
+.en-t input.en-g{height:32px;border:1.5px solid var(--line2);border-radius:9px;padding:0 8px;font-size:12.5px;width:140px;background:#fff}
+.en-t tr.urg td{background:#fff6f6}
+.en-st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.en-acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+/* ---------- GESTÃO DE DESEMPENHO (layout profissional) ---------- */
+.dsp-h{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.dsp-h h1{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.4px;line-height:1.15}
+.dsp-h p{color:var(--muted);font-size:14px;margin-top:4px;max-width:640px}
+.dsp-h .btn{margin-left:auto}
+.dsp-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.dsp-tabs button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:11px 16px;font:600 14px/1 inherit;font-family:inherit;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px;white-space:nowrap;cursor:pointer}
+.dsp-tabs button svg{width:17px;height:17px}
+.dsp-tabs button.on{color:var(--red);border-bottom-color:var(--red)}
+.dsp-tabs .n{font-size:11.5px;font-weight:700;background:var(--tile);border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:2px 8px}
+.dsp-tabs button.on .n{background:var(--red-soft);border-color:var(--red-line);color:var(--red)}
+.dsp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media(max-width:900px){.dsp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dsp-k{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-family:inherit;cursor:default;box-shadow:var(--shadow)}
+.dsp-k.click{cursor:pointer;transition:.15s}.dsp-k.click:hover{border-color:var(--red-line);transform:translateY(-1px)}
+.dsp-k .ki{font-size:12.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dsp-k .kv{font-size:28px;font-weight:800;color:var(--ink);line-height:1.15}
+.dsp-k .ks{font-size:12px;color:var(--muted)}
+.dsp-k.hot .kv{color:var(--red)}.dsp-k.warn .kv{color:#B7791F}.dsp-k.ok .kv{color:var(--green)}
+.dsp-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.dsp-card-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.dsp-card-h b{font-size:15px;color:var(--ink)}.dsp-card-h .btn{margin-left:auto}
+.dsp-t{width:100%;border-collapse:collapse;font-size:13.5px}
+.dsp-t th{text-align:left;font-size:11.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--muted);padding:10px 18px;background:var(--tile);border-bottom:1px solid var(--line)}
+.dsp-t td{padding:12px 18px;border-bottom:1px solid var(--line);vertical-align:middle}
+.dsp-t tr:last-child td{border-bottom:0}
+.dsp-t tbody tr{cursor:pointer;transition:background .12s}.dsp-t tbody tr:hover{background:var(--red-soft)}
+.dsp-t td b{color:var(--ink)}.dsp-t td small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.dsp-t tr.fim td{color:var(--muted)}.dsp-t tr.fim td b{color:var(--muted);font-weight:600}
+.dsp-t .c{text-align:center}.dsp-t .seta{color:var(--muted);text-align:right;width:30px}
+.dsp-bar{height:5px;border-radius:5px;background:var(--line);margin-top:6px;max-width:90px;overflow:hidden}.dsp-bar i{display:block;height:100%;background:var(--green)}
+.dsp-vazio{padding:28px 18px;text-align:center;color:var(--muted);font-size:14px}
+.dsp-limpa{display:flex;align-items:center;gap:12px;border:1px dashed var(--line2);border-radius:14px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--text);background:var(--tile)}
+.dsp-limpa .btn{margin-left:auto}
+.dsp-cfg{background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:16px}
+.dsp-cfg>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;font-weight:700;color:var(--ink);font-size:14.5px}
+.dsp-cfg>summary::-webkit-details-marker{display:none}
+.dsp-cfg>summary small{font-weight:500;color:var(--muted);font-size:12.5px}
+.dsp-cfg>summary .sx{margin-left:auto;color:var(--muted);transition:transform .2s}
+.dsp-cfg[open]>summary .sx{transform:rotate(90deg)}
+.dsp-cfg-b{padding:4px 18px 18px;display:grid;grid-template-columns:1fr 1fr;gap:18px;border-top:1px solid var(--line)}
+@media(max-width:900px){.dsp-cfg-b{grid-template-columns:1fr}}
+.dsp-cfg-b h4{font-size:13px;margin:14px 0 8px;color:var(--ink)}
+.dsp-cfg-b ol,.dsp-cfg-b ul{margin:0;padding-left:18px;font-size:13px;color:var(--text);line-height:1.6}
+.dsp-cfg-a{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.dsp-cfg .fx-box{margin:14px 0 0}
+/* ---------- FORMS DA EXPERIÊNCIA ---------- */
+.pd{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0;flex:none}
+.xf-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.xf-c{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;font-family:inherit}
+.xf-c b{margin-left:6px;color:var(--muted);font-weight:700}
+.xf-c.on{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.fx-box{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0 12px;background:var(--tile)}
+.fx-box h4{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.fx-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 0;border-top:1px solid var(--line)}
+.fx-l:first-of-type{border-top:0}
+.fx-l .fx-n{font-weight:700;min-width:62px}
+.fx-l .fx-u{flex:1;min-width:140px;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx-in{display:flex;align-items:center;gap:12px;border:1.5px solid var(--red-line);background:var(--red-soft);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.fx-in b{color:var(--ink)}.fx-in small{display:block;color:var(--muted)}
+a.btn{text-decoration:none}
+.fx-ok{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--tile);border-radius:14px;padding:12px 14px;margin:0 0 14px}.fx-ok svg{width:22px;height:22px;color:var(--green);flex:none}.fx-ok small{display:block;color:var(--muted);margin-top:2px}
+.fx-man{margin-top:16px}.fx-man summary{cursor:pointer;font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.fx-t td{vertical-align:middle}.fx-t select{min-width:0;width:auto}.fx-t td small{display:block;color:var(--muted);font-size:11.5px}.fx-nota{font-size:17px}
+.fx-and{display:flex;align-items:center;gap:10px;border:1.5px solid var(--red-line);background:#fff;border-radius:12px;padding:9px 12px;margin:0 0 8px;cursor:pointer;width:100%;text-align:left;font-family:inherit}
+.fx-and:hover{background:var(--red-soft)}.fx-and b{font-size:13.5px;color:var(--ink)}.fx-and small{display:block;color:var(--muted);font-size:12px}.fx-and .chip{margin-left:auto}
+.fx-step{margin:0 0 10px;padding-left:18px}.fx-step li{margin:4px 0;line-height:1.45}
 </style>
 </head>
 <body>
@@ -3899,10 +4011,10 @@ function telaDesempenho(){
       <div class="progress" style="max-width:300px"><i style="width:${p}%"></i></div></div></div>`; };
   return `<div class="hero area-hero"><div class="stripe"></div><div class="hero-in"><div class="big big-av">${avatarSVG(a.id, true)}</div><div style="min-width:0;flex:1"><h1>${esc(a.nome)}</h1><p>Quatro avaliações: <b>ciclo</b> (só o gestor avalia o colaborador, a cada 6 meses) · <b>liderança</b> (o colaborador avalia o seu líder, anônima) · <b>experiência</b> (o líder avalia quem está nos 45 e 90 dias) · <b>autoavaliação</b> (todos avaliam a si mesmos e contam como acham que são vistos). As avaliações são preenchidas aqui na Central ou no papel.</p></div>
     <div class="hero-acts"><button class="btn btn-red" id="novoCiclo">${ic('plus')}Nova avaliação</button></div></div></div>
+  <div class="panel"><div class="panel-h">Avaliações em andamento <span class="count">${ab.length}</span></div>${ab.map(item).join('') || `<div class="empty">Nenhuma avaliação em andamento. Escolha um modelo abaixo ou clique em <b>Nova avaliação</b>.</div>`}</div>
   ${painelModelos()}
   <div class="panel"><div class="panel-h">Passo a passo — avaliação de ciclo</div>
     <div class="rs-flow" style="grid-template-columns:repeat(4,1fr)">${CICLO_ETAPAS.map((e,i) => `<div class="rs-step"><span class="nv">${i+1}</span><div><b>${esc(e.n)}</b><small>${esc(e.r)}</small></div></div>`).join('')}</div></div>
-  <div class="panel"><div class="panel-h">Avaliações em andamento <span class="count">${ab.length}</span></div>${ab.map(item).join('') || `<div class="empty">Nenhuma avaliação em andamento. Escolha um modelo acima ou clique em <b>Nova avaliação</b>.</div>`}</div>
   ${fe.length ? `<div class="panel"><div class="panel-h" style="font-size:16px">Avaliações encerradas</div>${fe.map(item).join('')}</div>` : ''}
   <div class="ed-note" style="margin-top:16px">${ic('clock')}<div>Quem está com a <b>experiência vencendo (45 e 90 dias)</b> aparece no “Precisa de você” e no <a href="#" id="dspQuadro">Quadro de pessoas</a>. Para avaliar, use o modelo <b>Avaliação de experiência</b> — o sistema já lista quem vence.</div></div>`;
 }
@@ -3943,7 +4055,7 @@ function desenharCiclo(){
   const ET = etapasDe(CD), at = ET.find(e => !(CD.etapas[e.k] || {}).ok);
   box.innerHTML = ET.map((e, i) => { const et = CD.etapas[e.k] || {}, ok = !!et.ok, atual = at && at.k === e.k, aberta = CAberta === e.k;
     return `<div class="vstep ${ok ? 'ok' : ''} ${atual ? 'atual' : ''}"><div class="vstep-h" data-ctog="${e.k}"><span class="vnum">${ok ? '✓' : i+1}</span><div style="flex:1;min-width:0"><b>${esc(e.n)}</b><small>${esc(e.r)}</small></div>${ok ? `<span class="chip g">Concluída${et.data ? ' em ' + dataCurta(et.data) : ''}</span>` : atual ? '<span class="chip">Etapa atual</span>' : '<span class="chip n">Pendente</span>'}</div>
-      ${aberta ? `<div class="vstep-b"><p>${esc(e.d)}</p><div class="ed-note" style="margin:10px 0">${ic('spark')}<div>${esc(e.dica)}</div></div><div class="vmat" data-cmat="${e.k}"></div>
+      ${aberta ? `<div class="vstep-b">${e.d ? `<p>${esc(e.d)}</p>` : ''}${e.dica ? `<div class="ed-note" style="margin:10px 0">${ic('spark')}<div>${esc(e.dica)}</div></div>` : ''}<div class="vmat" data-cmat="${e.k}"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${ok ? `<button class="btn btn-ghost sm" data-creabre="${e.k}">Reabrir etapa</button>` : e.k === 'fim' ? '' : `<button class="btn btn-red sm" data-cok="${e.k}">${ic('check')}Concluir etapa</button>`}</div></div>` : ''}</div>`; }).join('');
   if ($('#cProg')) $('#cProg').style.width = progressoCiclo(CD) + '%';
   box.querySelectorAll('[data-ctog]').forEach(el => el.onclick = () => { CAberta = CAberta === el.dataset.ctog ? '' : el.dataset.ctog; desenharCiclo(); });
@@ -3961,14 +4073,14 @@ const MATC = {
     el.innerHTML = `<div class="emp-conf ok" style="margin-bottom:12px"><div class="emp-conf-h">${ic('users')}<div><b>Quem responde: ${esc(quemResponde(md))}</b><span>${esc(md.d)}</span></div></div></div>
       <div class="txed"><div class="row2"><div class="field"><label>Nome</label><input data-cf="nome" value="${esc(CD.nome || '')}"></div><div class="field"><label>Prazo para responder</label><input type="date" data-cf="prazo" value="${esc(CD.prazo || '')}"></div></div>
       <div class="row2"><div class="field"><label>Período avaliado — início</label><input type="date" data-cf="ini" value="${esc(CD.ini || '')}"></div><div class="field"><label>Período avaliado — fim</label><input type="date" data-cf="fim" value="${esc(CD.fim || '')}"></div></div></div>
-      <div class="txed"><div class="txed-h"><b>O que vai ser avaliado</b><span>Já vem pronto do modelo — não precisa mexer.</span><button class="btn btn-red sm" id="plForms" style="margin-left:auto">${ic('doc')}Modelo para o Forms</button></div>
+      ${tipoCiclo(CD) === 'experiencia' ? '' : `<div class="txed"><div class="txed-h"><b>O que vai ser avaliado</b><span>Já vem pronto do modelo — não precisa mexer.</span><button class="btn btn-red sm" id="plForms" style="margin-left:auto">${ic('doc')}Modelo para o Forms</button></div>
         <ol class="gd-r">${blocos.map(x => `<li><b>${esc(x[0])}</b> — ${esc(x[1])}</li>`).join('')}</ol>
         <details ${S.planoAj ? 'open' : ''} style="margin-top:8px"><summary class="small-m" style="cursor:pointer">Ajustar o que entra (opcional)</summary><div style="margin-top:8px">
           ${md.ind ? `<label class="chkline"><input type="checkbox" data-cc="ind" ${cfg.ind !== false ? 'checked' : ''}> Incluir os resultados da função</label>` : ''}
           ${md.tec ? `<label class="chkline"><input type="checkbox" data-cc="tec" ${cfg.tec !== false ? 'checked' : ''}> Incluir os conhecimentos técnicos</label>` : ''}
           <div class="docs-adm">${its.map(x => `<label class="chkline"><input type="checkbox" data-comp="${esc(x[0])}" ${!cfg.comps || cfg.comps.includes(x[0]) ? 'checked' : ''}> ${esc(x[0])}</label>`).join('')}</div>
-          ${avalsDo(CD.id).length ? '<p class="small-m" style="margin-top:8px">Mudanças aqui valem para quem ainda não respondeu (clique em “Atualizar formulários” na etapa 2).</p>' : ''}</div></details></div>`;
-    $('#plForms').onclick = () => modalForms(tipoCiclo(CD), CD.config);
+          ${avalsDo(CD.id).length ? '<p class="small-m" style="margin-top:8px">Mudanças aqui valem para quem ainda não respondeu (clique em “Atualizar formulários” na etapa 2).</p>' : ''}</div></details></div>`}`;
+    if ($('#plForms')) $('#plForms').onclick = () => modalForms(tipoCiclo(CD), CD.config);
     el.querySelectorAll('[data-cf]').forEach(i => i.oninput = () => { CD[i.dataset.cf] = i.value; cicloPendente(); });
     el.querySelectorAll('[data-cc]').forEach(i => i.onchange = () => { cfg[i.dataset.cc] = i.checked; cicloPendente(); S.planoAj = true; MATC.plano(el); });
     el.querySelectorAll('[data-comp]').forEach(i => i.onchange = () => { cfg.comps = [...el.querySelectorAll('[data-comp]:checked')].map(x => x.dataset.comp); cicloPendente(); S.planoAj = true; MATC.plano(el); }); },
@@ -4218,7 +4330,7 @@ function ligarCiclo(){
   if (!$('#cSteps')) return;
   desenharCiclo();
   $('#cSalvar').onclick = salvarCiclo;
-  $('#cAtual').onclick = async () => { try { await salvarCiclo(); S.avals = await DB.all('rh_avaliacoes'); render(); toast('Respostas atualizadas'); } catch(e){ toast('Erro ao atualizar'); } };
+  $('#cAtual').onclick = async () => { try { await salvarCiclo(); S.avals = await DB.all('rh_avaliacoes'); try { S.fentrada = await DB.all('rh_forms_entrada'); } catch(e){} render(); toast('Respostas atualizadas'); } catch(e){ toast('Erro ao atualizar'); } };
   if ($('#cExcluir')) $('#cExcluir').onclick = async () => { if (!confirm('Excluir este ciclo e TODAS as avaliações dele? Não dá para desfazer.')) return;
     try { for (const a of avalsDo(CD.id)) await DB.remove('rh_avaliacoes', a.id); await DB.remove('rh_ciclos', CD.id); S.avals = S.avals.filter(a => a.ciclo_id !== CD.id); S.ciclos = S.ciclos.filter(c => c.id !== CD.id); CD = null; ir('area', 'desempenho'); toast('Ciclo excluído'); } catch(e){ toast('Erro ao excluir'); } };
 }
@@ -4265,8 +4377,10 @@ const tipoCiclo = c => (c && c.config && c.config.tipo) || 'ciclo';
 function etapasDe(c){ const t = tipoCiclo(c);
   if (t === 'autoavaliacao') return CICLO_ETAPAS.filter(e => ['plano','part','links'].includes(e.k)).concat([ETAPA_RESA, CICLO_ETAPAS.find(e => e.k === 'fim')]);
   if (t === 'lideranca') return CICLO_ETAPAS.filter(e => ['plano','part','links'].includes(e.k)).concat([ETAPA_RESL, ETAPA_DEVL, CICLO_ETAPAS.find(e => e.k === 'fim')]);
-  if (t === 'experiencia') return CICLO_ETAPAS.filter(e => !['consol','prog'].includes(e.k)).flatMap(e => e.k === 'feedback' ? [ETAPA_DEC, e] : [e]);
+  if (t === 'experiencia') return CICLO_ETAPAS.filter(e => !['consol','prog','part'].includes(e.k)).flatMap(e => e.k === 'feedback' ? [ETAPA_DEC, e] : e.k === 'plano' ? [ETAPA_EXP_PLANO] : e.k === 'links' ? [ETAPA_EXP_RESP] : [e]);
   return CICLO_ETAPAS; }
+const ETAPA_EXP_PLANO = { k:'plano', n:'Nome, período e prazo', r:'RH', d:'Confira o nome, o período e o prazo para os gestores responderem.', dica:'' };
+const ETAPA_EXP_RESP = { k:'links', n:'Respostas dos gestores', r:'RH', d:'', dica:'' };
 const ETAPA_DEC = { k:'dec', n:'Resultado e decisão', r:'RH e gestor', d:'Veja a nota e a recomendação do gestor e registre a decisão: seguir para o 2º período, efetivar ou não efetivar — antes do vencimento.', dica:'Não deixe passar o vencimento: no 45º e no 90º dia o contrato prorroga ou vira prazo indeterminado automaticamente.' };
 
 function formPara(cargoId, cfg){
@@ -4455,7 +4569,8 @@ function campoForms(h){ const n = normTxt(h), eq = k => n === normTxt(FQ[k]);
   if (/CARIMBO|TIMESTAMP|DATA HORA/.test(n)) return 'carimbo';
   if (/E ?MAIL/.test(n)) return 'email';
   if (eq('avaliado') || eq('lider') || eq('eu')) return 'pessoa';
-  if (eq('avaliador')) return 'avaliador';
+  if (eq('avaliador') || /^SEU NOME/.test(n)) return 'avaliador';
+  if (/^CPF/.test(n)) return 'cpf';
   if (eq('fase') || /^FASE/.test(n)) return 'fase';
   if (eq('funcao') || eq('minhaFuncao')) return 'funcao';
   if (eq('setor')) return 'setor';
@@ -4472,7 +4587,7 @@ const ehNota = v => /^[1-5]([.,]0+)?$/.test(String(v).trim());
 function nomesParecidos(a, b){ a = normTxt(a); b = normTxt(b); if (!a || !b) return false; if (a === b) return true;
   const ta = a.split(' '), tb = b.split(' '), [cu, lo] = ta.length <= tb.length ? [ta, tb] : [tb, ta];
   return cu.length >= 2 && cu[0] === lo[0] && cu.every(x => lo.includes(x)); }
-function modalImportForms(arq, head, linhas, redesenha){
+function modalImportForms(arq, head, linhas, redesenha, aoLancar){
   const tp = tipoCiclo(CD), lado = ['autoavaliacao','lideranca'].includes(tp) ? 'auto' : 'gestor', L = tp === 'lideranca';
   const mapa = head.map(campoForms);
   let iP = mapa.indexOf('pessoa');
@@ -4486,7 +4601,7 @@ function modalImportForms(arq, head, linhas, redesenha){
   const cols = () => head.map((h, i) => ({ h, i })).filter(c => c.i !== iP && !mapa[c.i]);
   const notasCols = () => cols().filter(c => conhecidos.has(normTxt(c.h)) || (linhas.some(r => String(r[c.i]).trim()) && linhas.every(r => !String(r[c.i]).trim() || ehNota(r[c.i]))));
   const txtCols = () => head.map((h, i) => ({ h, i, k:mapa[i] })).filter(c => c.i !== iP && ['visto','fortes','desenv','futuro','apoio','pot','prog','dec','fase','avaliador','funcao','setor'].includes(c.k));
-  const ignor = () => { const usa = new Set([iP, ...notasCols().map(c => c.i), ...txtCols().map(c => c.i)]); return head.filter((h, i) => h && !usa.has(i) && !['carimbo','email'].includes(mapa[i])); };
+  const ignor = () => { const usa = new Set([iP, ...notasCols().map(c => c.i), ...txtCols().map(c => c.i)]); return head.filter((h, i) => h && !usa.has(i) && !['carimbo','email','cpf'].includes(mapa[i])); };
   const av = avalsDo(CD.id), alvos = L ? lideresDoCiclo().map(n => ({ v:'L:' + n, n })) : av.map(a => ({ v:a.id, n:a.nome }));
   const fonteDe = r => 'forms|' + normTxt(r[mapa.indexOf('carimbo')] || '') + '|' + normTxt(r[iP] || '') + (L ? '|' + linhas.indexOf(r) : '');
   const jaFoi = new Set(S.avals.filter(a => a.ciclo_id === CD.id).map(a => (a['resp_' + lado] || {}).fonte).filter(Boolean));
@@ -4495,7 +4610,23 @@ function modalImportForms(arq, head, linhas, redesenha){
   const calc = () => { destino = linhas.map(r => { const nm = String(r[iP] || '').trim(); if (!nm) return '__ign'; if (jaFoi.has(fonteDe(r))) return '__ja';
     const a = alvos.find(x => nomesParecidos(x.n, nm)); return a ? a.v : '__novo'; }); };
   const media = r => { const v = notasCols().map(c => String(r[c.i]).trim()).filter(ehNota).map(x => +x.replace(',', '.')); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const desenhaExp = () => {
+    const nc = notasCols(), ig = ignor(), q = destino.filter(d => !d.startsWith('__') || d === '__novo').length;
+    const v = (r, k) => { const i = mapa.indexOf(k); return i > -1 ? String(r[i] || '').trim() : ''; };
+    $('#fiB').innerHTML = `${ig.length ? `<div class="emp-aviso" style="margin:0 0 10px">${ic('shield')}<div><b>${ig.length} pergunta(s) não reconhecida(s)</b> — ficam de fora: ${ig.map(esc).join(' · ')}.</div></div>` : ''}
+      <div class="tri-wrap"><table class="tri fi-t fx-t"><thead><tr><th>Avaliado</th><th>Avaliado por</th><th>Fase</th><th>Pontuação</th><th>Recomendação do gestor</th><th>Lançar?</th></tr></thead><tbody>
+      ${linhas.map((r, j) => { const d = destino[j], nm = String(r[iP] || '').trim(), m = media(r), dec = v(r, 'dec'), fase = /90/.test(v(r, 'fase')) ? 90 : 45, base = d === '__novo' && naBase(nm);
+        return `<tr class="${d === '__ign' || d === '__ja' ? 'muted' : ''}"><td><b>${esc(nm ? tituloNome(nm) : '(sem nome)')}</b><small>${esc(v(r, 'funcao') || (base ? base.funcao || base.cargo || '' : ''))}${v(r, 'carimbo') ? ' · respondida ' + esc(v(r, 'carimbo').slice(0, 16)) : ''}</small></td>
+          <td><b>${esc(tituloNome(v(r, 'avaliador')) || '—')}</b></td>
+          <td class="c"><span class="chip n">${fase} dias</span></td>
+          <td class="c"><b class="fx-nota tx-${m === null ? 'n' : m >= 4 ? 'g' : m >= 3 ? 'a' : 'r'}">${fmtN(m)}</b><small>de 5</small></td>
+          <td><span class="pd bg-${corParecer({ resp_gestor:{ dec } })}"></span>${esc(dec || '—')}</td>
+          <td>${d === '__ja' ? '<span class="chip n">Já lançada</span>' : `<select data-fid="${j}">${alvos.map(x => `<option value="${esc(x.v)}" ${x.v === d ? 'selected' : ''}>${esc(tituloNome(x.n))}</option>`).join('')}<option value="__novo" ${d === '__novo' ? 'selected' : ''}>✓ Lançar</option><option value="__ign" ${d === '__ign' ? 'selected' : ''}>✕ Não lançar</option></select>`}</td></tr>`; }).join('')}</tbody></table></div>`;
+    $('#fiOk').innerHTML = `${ic('check')}Lançar ${q} resposta(s)`; $('#fiOk').disabled = !q || !nc.length;
+    document.querySelectorAll('[data-fid]').forEach(s => s.onchange = () => { destino[+s.dataset.fid] = s.value; desenhaExp(); });
+  };
   const desenha = () => {
+    if (tp === 'experiencia') return desenhaExp();
     const nc = notasCols(), tc = txtCols(), ig = ignor(), q = destino.filter(d => !d.startsWith('__') || d === '__novo').length;
     $('#fiB').innerHTML = `<div class="fi-res"><div><b>${linhas.length}</b><small>respostas no arquivo</small></div><div><b class="tx-g">${nc.length}</b><small>notas reconhecidas</small></div><div><b>${tc.length}</b><small>outras perguntas</small></div><div><b class="${destino.includes('__ja') ? '' : 'tx-n'}">${destino.filter(d => d === '__ja').length}</b><small>já lançadas antes</small></div></div>
       <div class="field" style="margin:12px 0 8px"><label>Coluna com o nome ${L ? 'do líder avaliado' : tp === 'autoavaliacao' ? 'de quem respondeu' : 'da pessoa avaliada'}</label><select id="fiP">${head.map((h, i) => `<option value="${i}" ${i === iP ? 'selected' : ''}>${esc(h || 'coluna ' + (i + 1))}</option>`).join('')}</select></div>
@@ -4552,22 +4683,24 @@ function modalImportForms(arq, head, linhas, redesenha){
         if (resp.fase){ f.fase = resp.fase; patch.rh = { ...(a.rh || {}), fase:resp.fase }; }
         if (lado === 'gestor' && !a.gestor && val('avaliador')) patch.gestor = val('avaliador');
         await DB.update('rh_avaliacoes', a.id, patch); Object.assign(a, patch); lancadas.add(j); feitos++; }
-      fecharModal(); toast(feitos + ' resposta(s) lançada(s) do Forms'); render();
+      if (aoLancar) { try { await aoLancar(destino, lancadas); } catch(e){} } fecharModal(); toast(feitos + ' resposta(s) lançada(s) do Forms'); render();
     } catch(e){ $('#fiErr').textContent = 'Erro ao lançar (' + feitos + ' já foram): ' + (e.message || e); $('#fiOk').disabled = false; $('#fiOk').textContent = 'Tentar de novo'; } };
 }
 
 /* decisão da experiência */
-MATC.dec = el => { const av = avalsDo(CD.id), A = id => S.avals.find(a => a.id === id);
-  el.innerHTML = av.length ? `<div class="tri-wrap"><table class="tri"><thead><tr><th>Pessoa</th><th>Fase</th><th>Vence em</th><th>Nota do gestor</th><th>Gestor recomenda</th><th>Decisão final</th><th></th></tr></thead><tbody>
+MATC.dec = el => { const avT = avalsDo(CD.id), A = id => S.avals.find(a => a.id === id), XF = S.xfParecer || '', av = avT.filter(a => !XF || corParecer(a) === XF);
+  const cont = k => avT.filter(a => corParecer(a) === k).length;
+  el.innerHTML = avT.length ? `<div class="xf-bar"><button class="xf-c ${!XF ? 'on' : ''}" data-xf="">Todos<b>${avT.length}</b></button>${PARECER_CORES.map(([k, l]) => `<button class="xf-c ${XF === k ? 'on' : ''}" data-xf="${k}"><span class="pd bg-${k}"></span>${l}<b>${cont(k)}</b></button>`).join('')}</div>` + (av.length ? '' : '<div class="empty" style="padding:10px">Ninguém com esse parecer.</div>') + `<div class="tri-wrap"><table class="tri"><thead><tr><th>Pessoa</th><th>Fase</th><th>Vence em</th><th>Nota do gestor</th><th>Gestor recomenda</th><th>Decisão final</th><th></th></tr></thead><tbody>
     ${av.map(a => { const r = a.rh || {}, fase = (a.form || {}).fase || r.fase || 45, venc = r.venc, dd = venc ? diasAte(venc) : null;
       return `<tr><td><b>${esc(tituloNome(a.nome))}</b><small>${esc(a.funcao || '')} · ${esc(tituloNome(a.gestor || ''))}</small></td><td class="c">${fase} dias</td>
         <td>${venc ? `<span class="chip ${dd < 0 ? '' : dd <= 5 ? 'a' : 'n'}">${dataCurta(venc)}${dd !== null ? ' · ' + (dd < 0 ? 'vencido' : dd === 0 ? 'hoje' : dd + ' dias') : ''}</span>` : '—'}</td>
-        <td class="c"><b>${fmtN(mGest(a))}</b></td><td>${esc((a.resp_gestor || {}).dec || (a.gestor_em ? '—' : 'aguardando o gestor'))}</td>
+        <td class="c"><b>${fmtN(mGest(a))}</b></td><td><span class="pd bg-${corParecer(a)}"></span>${esc((a.resp_gestor || {}).dec || (a.gestor_em ? '—' : 'aguardando o gestor'))}</td>
         <td><select data-xdec="${a.id}"><option value="">—</option>${DEC_EXP[fase].map(o => `<option ${r.decisao === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></td>
         <td style="white-space:nowrap"><button class="icon-btn" data-nver="${a.id}" title="Ver respostas">${ic('doc')}</button><button class="icon-btn" data-xpr="${a.id}" title="Imprimir relatório">${ic('print')}</button></td></tr>`; }).join('')}</tbody></table></div>
     <p class="small-m">Para “Não prorrogar” ou “Não efetivar”, abra o checklist e os documentos de desligamento antes do vencimento.</p>
     <div class="cline-r" style="margin-top:8px"><button class="btn btn-ghost sm" id="xDesl">${ic('files')}Documentos de desligamento</button></div>`
     : vazioCands('Ninguém nesta avaliação ainda.');
+  el.querySelectorAll('[data-xf]').forEach(b => b.onclick = () => { S.xfParecer = b.dataset.xf; MATC.dec(el); });
   el.querySelectorAll('[data-xdec]').forEach(s => s.onchange = () => { const a = A(s.dataset.xdec); a.rh = a.rh || {}; a.rh.decisao = s.value; avPend(a.id); });
   el.querySelectorAll('[data-nver]').forEach(b => b.onclick = () => modalRespostas(b.dataset.nver));
   el.querySelectorAll('[data-xpr]').forEach(b => b.onclick = () => imprimirRelatorioAval(A(b.dataset.xpr)));
@@ -6563,8 +6696,459 @@ function modalUsuario(p){
   };
 }
 
+
+/* =========================================================
+   FORMS DA EXPERIÊNCIA (45 e 90 dias) — links fixos + respostas automáticas
+   ========================================================= */
+const PARECER_CORES = [['g','Seguir / Efetivar'],['a','Plano de acompanhamento'],['r','Não prorrogar / Não efetivar'],['n','Aguardando o gestor']];
+function corParecer(a){ const d = normTxt((a.resp_gestor || {}).dec || '');
+  if (!d) return 'n';
+  if (/ACOMPANHAMENTO/.test(d)) return 'a';
+  if (/^NAO/.test(d)) return 'r';
+  return 'g'; }
+const FX_FASES = [['45','Experiência 45 dias','exp45'],['90','Experiência 90 dias','exp90']];
+const fxLinks = () => { const v = S.base.exp_forms; return (v && typeof v === 'object') ? v : lerJSON(v, {}); };
+const fxEntradas = () => S.fentrada || [];
+function fxFonte(x){ const h = x.head || [], r = x.row || [], iC = h.findIndex(c => /CARIMBO|TIMESTAMP/.test(normTxt(c))), iN = h.findIndex(c => normTxt(c) === normTxt(FQ.avaliado));
+  return 'forms|' + normTxt(r[iC] || '') + '|' + normTxt(r[iN] || ''); }
+function fxNomeDe(x){ const h = x.head || [], i = h.findIndex(c => normTxt(c) === normTxt(FQ.avaliado)); return i > -1 ? String((x.row || [])[i] || '') : ''; }
+function fxPendentes(fase){ const ja = new Set(S.avals.map(a => (a.resp_gestor || {}).fonte).filter(Boolean));
+  return fxEntradas().filter(x => (x.status || 'nova') === 'nova' && !ja.has(fxFonte(x)) && (!fase || x.form === 'exp' + fase)); }
+async function copiarTxt(txt, ok){ try { await navigator.clipboard.writeText(txt); toast(ok); } catch(e){ const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast(ok); } }
+const fxMsg = (fase, url) => `Olá! 😊 Segue o link da *avaliação de experiência de ${fase} dias* da ILED.\n\nResponda uma vez para cada pessoa da sua equipe que está completando ${fase} dias:\n${url}\n\nSua resposta é muito importante para decidirmos a continuidade do contrato dentro do prazo. Obrigada!`;
+
+
+const ciclosExpAbertos = () => (S.ciclos || []).filter(c => c.status !== 'encerrado' && tipoCiclo(c) === 'experiencia');
+function abrirCicloExp(etapa, fase){
+  if (!fase){ const p = fxPendentes(); if (etapa === 'links' && p.length) fase = p[0].form === 'exp90' ? '90' : '45'; else return modalFaseExp(); }
+  const c = ciclosExpAbertos().find(x => String((x.config || {}).fase || '') === String(fase) && ehDoMes(x.created_at || x.ini));
+  if (!c) return criarCicloExp(fase, etapa);
+  CAberta = etapa || null; ir('ciclo', c.id);
+}
+const nomeExp = fase => { const h = new Date(); return `Experiência ${fase} dias · ${MESES[h.getMonth()]}/${h.getFullYear()}`; };
+async function criarCicloExp(fase, etapa){
+  const m = modeloAval('experiencia');
+  const row = { nome:nomeExp(fase), ini:hojeISO(), fim:addDias(hojeISO(), 30), prazo:addDias(hojeISO(), 5), status:'aberto',
+    config:{ tipo:'experiencia', fase:String(fase), ind:m.ind, tec:m.tec, comps:(m.itens || []).filter(Boolean).map(x => x[0]), tokens:{} }, etapas:{}, criado_por_nome:S.user.nome };
+  try { const r = await DB.insert('rh_ciclos', row); S.ciclos.unshift(r); CAberta = etapa || 'plano'; ir('ciclo', r.id); toast('Avaliação de ' + fase + ' dias criada'); } catch(e){ toast('Erro ao criar: ' + (e.message || e)); }
+}
+function modalFaseExp(){
+  const ab = ciclosExpAbertos();
+  modal(`<div class="modal-head"><div class="mi">${ic('clock')}</div><div><h3>Avaliação de experiência</h3><p>Qual período você vai avaliar?</p></div><button class="x"></button></div>
+    <div class="modal-body"><div class="xp-fase">${['45','90'].map(f => { const ja = ab.find(x => String((x.config || {}).fase || '') === f && ehDoMes(x.created_at || x.ini));
+      return `<label data-fxf="${f}"><input type="radio" name="fxf"><span><b>${f} dias</b><small>${ja ? 'Já existe a deste mês — vai abrir ela' : f === '45' ? 'Fim do 1º período' : 'Fim da experiência — efetivar ou não'}</small></span></label>`; }).join('')}</div></div>`, 'sm');
+  document.querySelectorAll('[data-fxf]').forEach(l => l.onclick = () => { fecharModal(); abrirCicloExp(null, l.dataset.fxf); });
+}
+const _novoCicloExp = novoCiclo;
+novoCiclo = function(tipo, fase){ if (tipo === 'experiencia') return fase ? abrirCicloExp(null, fase) : modalFaseExp(); return _novoCicloExp.apply(this, arguments); };
+function blocoExpAndamento(){
+  const ab = ciclosExpAbertos(), p = fxPendentes().length;
+  if (!ab.length) return `<div class="fx-box" style="margin-top:0"><h4>${ic('clock')} Em andamento</h4><p class="small-m" style="margin:0">Nenhuma avaliação de experiência aberta. Clique em <b>Abrir avaliação</b> para criar a deste mês.</p></div>`;
+  return `<div class="fx-box" style="margin-top:0"><h4>${ic('clock')} Em andamento</h4>${ab.map((c, i) => { const av = avalsDo(c.id), dec = av.filter(a => (a.rh || {}).decisao).length;
+    return `<button class="fx-and" data-fxab="${c.id}"><div><b>${esc(c.nome)}</b><small>${av.length} avaliado(s) · ${dec} decisão(ões) registrada(s)${c.prazo ? ' · prazo ' + dataCurta(c.prazo) : ''}</small></div>${i === 0 && p ? `<span class="chip a">📥 ${p} nova(s)</span>` : `<span class="chip n">Abrir →</span>`}</button>`; }).join('')}</div>`;
+}
+function blocoFormsExp(){
+  const L = fxLinks(), p = fxPendentes().length;
+  return `<div class="fx-box"><h4>${ic('doc')} Links do Google Forms ${p ? `<button class="chip a" data-fxgo style="margin-left:auto;border:0;cursor:pointer;font-family:inherit">📥 ${p} resposta(s) nova(s) — lançar →</button>` : ''}</h4>
+    ${FX_FASES.map(([f, n]) => { const u = (L[f] || '').trim(); return `<div class="fx-l"><span class="fx-n">${f} dias</span><span class="fx-u" title="${esc(u)}">${u ? esc(u) : 'link ainda não cadastrado'}</span>
+      ${u ? `<button class="btn btn-ghost sm" data-fxcp="${f}">${ic('copy')}Copiar</button><button class="btn btn-ghost sm" data-fxzap="${f}">${ic('chat')}WhatsApp</button><a class="btn btn-ghost sm" href="${esc(u)}" target="_blank" rel="noopener">Abrir</a>` : ''}</div>`; }).join('')}
+    ${isMaster() ? `<div class="fx-l"><button class="btn btn-ghost sm" data-fxed>${ic('doc')}${L['45'] || L['90'] ? 'Trocar links' : 'Cadastrar links'}</button>${LOCAL ? '' : `<button class="btn btn-dark sm" data-fxauto>${ic('zap')}Receber respostas automaticamente</button>`}</div>` : ''}</div>`;
+}
+function ligarFormsExp(root){
+  root = root || document; const L = fxLinks();
+  root.querySelectorAll('[data-fxcp]').forEach(b => b.onclick = () => copiarTxt(L[b.dataset.fxcp], 'Link copiado'));
+  root.querySelectorAll('[data-fxzap]').forEach(b => b.onclick = () => window.open(linkZap(fxMsg(b.dataset.fxzap, L[b.dataset.fxzap]), ''), '_blank'));
+  root.querySelectorAll('[data-fxed]').forEach(b => b.onclick = modalLinksForms);
+  root.querySelectorAll('[data-fxauto]').forEach(b => b.onclick = modalFormsAuto);
+  root.querySelectorAll('[data-fxgo]').forEach(b => b.onclick = () => abrirCicloExp('links'));
+  root.querySelectorAll('[data-fxab]').forEach(b => b.onclick = () => { CAberta = null; ir('ciclo', b.dataset.fxab); });
+}
+function modalLinksForms(){
+  const L = fxLinks();
+  modal(`<div class="modal-head"><div class="mi">${ic('doc')}</div><div><h3>Links do Google Forms</h3><p>Avaliação de experiência — o link que você manda para os gestores.</p></div><button class="x"></button></div>
+    <div class="modal-body">${FX_FASES.map(([f, n]) => `<div class="field"><label>${n}</label><input id="fxU${f}" value="${esc(L[f] || '')}" placeholder="https://docs.google.com/forms/d/e/.../viewform"></div>`).join('')}
+      <p class="small-m">No Forms, clique em <b>Enviar</b> → ícone de <b>link 🔗</b> → <b>Copiar</b>, e cole aqui.</p><div class="err" id="fxErr"></div></div>
+    <div class="modal-foot"><button class="btn btn-red" id="fxOk">${ic('save')}Salvar links</button></div>`, 'sm');
+  $('#fxOk').onclick = async () => { const o = {}; for (const [f] of FX_FASES){ const v = $('#fxU' + f).value.trim(); if (v && !/^https:\/\//.test(v)){ $('#fxErr').textContent = 'O link precisa começar com https://'; return; } o[f] = v; }
+    try { await DB.saveBase({ exp_forms: JSON.stringify(o) }); S.base.exp_forms = JSON.stringify(o); fecharModal(); render(); toast('Links salvos'); } catch(e){ $('#fxErr').textContent = 'Erro: ' + (e.message || e); } };
+}
+function scriptReceber(fase, token){
+  const code = FX_FASES.find(x => x[0] === fase)[2];
+  return `/* Central RH ILED — envia as respostas deste Forms (Experiência ${fase} dias) para a Central RH.
+   Cole no Forms de ${fase} dias: ⋮ (três pontinhos) → Editor de scripts. Depois rode "instalar" uma vez. */
+var CENTRAL = {
+  url: ${JSON.stringify(CONFIG.SUPABASE_URL)},
+  chave: ${JSON.stringify(CONFIG.SUPABASE_ANON_KEY)},
+  token: ${JSON.stringify(token)},
+  form: ${JSON.stringify(code)}
+};
+
+// Roda sozinho a cada resposta nova
+function enviar(e) { enviarResposta_(e.response); }
+
+function enviarResposta_(r) {
+  var head = ['Carimbo de data/hora', 'Endereço de e-mail'];
+  var row = [Utilities.formatDate(r.getTimestamp(), 'America/Sao_Paulo', 'dd/MM/yyyy HH:mm:ss'), r.getRespondentEmail() || ''];
+  r.getItemResponses().forEach(function (ir) {
+    var v = ir.getResponse();
+    head.push(ir.getItem().getTitle());
+    row.push(Array.isArray(v) ? v.join(', ') : String(v));
+  });
+  var res = UrlFetchApp.fetch(CENTRAL.url + '/rest/v1/rpc/rh_forms_receber', {
+    method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: { apikey: CENTRAL.chave },
+    payload: JSON.stringify({ p_token: CENTRAL.token, p_form: CENTRAL.form, p_head: head, p_row: row })
+  });
+  if (res.getResponseCode() !== 200 || res.getContentText() !== 'true') {
+    throw new Error('A Central RH não recebeu a resposta: ' + res.getContentText());
+  }
+}
+
+// 1) Rode esta UMA vez: liga o envio automático
+function instalar() {
+  var form = FormApp.getActiveForm();
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'enviar') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('enviar').forForm(form).onFormSubmit().create();
+  Logger.log('✅ Pronto! Cada resposta nova deste Forms vai direto para a Central RH.');
+}
+
+// 2) (Opcional) Manda para a Central RH as respostas que já estavam no Forms
+function enviarRespostasAntigas() {
+  var lista = FormApp.getActiveForm().getResponses();
+  lista.forEach(enviarResposta_);
+  Logger.log('✅ ' + lista.length + ' resposta(s) enviada(s) para a Central RH.');
+}
+`;
+}
+async function modalFormsAuto(){
+  let token = S.base.forms_token;
+  if (!token){ token = (crypto.randomUUID ? crypto.randomUUID() : uuid()).replace(/-/g, '');
+    try { await DB.saveBase({ forms_token: token }); S.base.forms_token = token; } catch(e){ return toast('Erro ao preparar: ' + (e.message || e)); } }
+  modal(`<div class="modal-head"><div class="mi">${ic('zap')}</div><div><h3>Receber as respostas automaticamente</h3><p>Cada resposta do Forms cai sozinha na Central RH — sem baixar planilha.</p></div><button class="x"></button></div>
+    <div class="modal-body">
+      <p style="margin-bottom:10px">Faça isto <b>uma vez em cada Forms</b> (45 dias e 90 dias). Leva uns 3 minutos.</p>
+      <ol class="fx-step">
+        <li>Abra o Forms <b>no modo de edição</b> (com a conta Google dona do formulário).</li>
+        <li>Clique nos <b>⋮ três pontinhos</b> (canto superior direito) → <b>Editor de scripts</b> (ou <b>Apps Script</b>).</li>
+        <li>Apague o que estiver escrito, clique no botão do Forms certo aqui embaixo e <b>cole</b> (Ctrl + V). Clique em <b>💾 Salvar</b>.</li>
+        <li>No topo, escolha a função <b>instalar</b> e clique em <b>▶ Executar</b>. O Google pede autorização: <b>Revisar permissões</b> → escolha a conta → <b>Avançado</b> → <b>Acessar (não seguro)</b> → <b>Permitir</b>. É seguro: o script é seu.</li>
+        <li>(Opcional) Para trazer as respostas antigas, escolha <b>enviarRespostasAntigas</b> e clique em <b>▶ Executar</b>.</li>
+      </ol>
+      <div class="ed-note" style="margin:6px 0 0">${ic('shield')}<div><b>Não mude os títulos das perguntas no Forms.</b> É por eles que a Central reconhece cada nota e a recomendação do gestor.</div></div>
+    </div>
+    <div class="modal-foot">${FX_FASES.map(([f]) => `<button class="btn btn-red" data-fxsc="${f}">${ic('copy')}Copiar script — ${f} dias</button>`).join('')}</div>`, 'lg');
+  document.querySelectorAll('[data-fxsc]').forEach(b => b.onclick = () => copiarTxt(scriptReceber(b.dataset.fxsc, token), `Script de ${b.dataset.fxsc} dias copiado — cole no Editor de scripts do Forms`));
+}
+function cardEntradaForms(fase){
+  const p = fxPendentes(fase); if (!p.length) return '';
+  const q45 = p.filter(x => x.form === 'exp45').length, q90 = p.filter(x => x.form === 'exp90').length;
+  return `<div class="fx-in"><div class="fm-up-i">📥</div><div style="flex:1"><b>${p.length} resposta(s) nova(s) chegaram do Forms</b><small>${[q45 ? q45 + ' de 45 dias' : '', q90 ? q90 + ' de 90 dias' : ''].filter(Boolean).join(' · ')} — ${p.slice(0, 4).map(x => esc(tituloNome(fxNomeDe(x)))).join(', ')}${p.length > 4 ? '…' : ''}</small></div><button class="btn btn-red sm" data-fxlan>${ic('check')}Conferir e lançar</button></div>`;
+}
+function lancarEntradaForms(el, fase){
+  const p = fxPendentes(fase); if (!p.length) return toast('Nenhuma resposta nova');
+  const head = []; p.forEach(x => (x.head || []).forEach(h => { if (!head.some(y => normTxt(y) === normTxt(h))) head.push(h); }));
+  head.push(FQ.fase);
+  const linhas = p.map(x => { const ix = new Map((x.head || []).map((h, i) => [normTxt(h), i]));
+    return head.map((h, i) => i === head.length - 1 ? (x.form === 'exp90' ? '90 dias' : '45 dias') : (ix.has(normTxt(h)) ? (x.row || [])[ix.get(normTxt(h))] : '')); });
+  modalImportForms('Respostas recebidas automaticamente', head, linhas, () => MATC.links(el), async (destino, lancadas) => {
+    for (let j = 0; j < p.length; j++){ const d = destino[j], st = d === '__ign' ? 'ignorada' : (lancadas.has(j) || d === '__ja') ? 'lancada' : null;
+      if (!st) continue; try { await DB.update('rh_forms_entrada', p[j].id, { status:st }); p[j].status = st; } catch(e){} }
+  });
+}
+// encaixa os links no card do modelo de experiência
+const _painelModelosFx = painelModelos;
+painelModelos = function(){ const h = _painelModelosFx.apply(this, arguments);
+  return h.replace(/(<h3>[^<]*<\/h3><p style="margin-bottom:6px"><b>45 e 90 dias[\s\S]*?)(<div class="mod-a">)/, (m0, a, b) => a + blocoExpAndamento() + blocoFormsExp() + b)
+          .replace('data-novot2="experiencia">', 'data-novot2="experiencia" data-expmes>')
+          .replace(/<button class="btn btn-red sm" data-modfm="experiencia">[\s\S]*?<\/button>/, ''); };
+const _ligarModelosFx = ligarModelos;
+ligarModelos = function(){ _ligarModelosFx.apply(this, arguments); ligarFormsExp();
+  document.querySelectorAll('[data-expmes]').forEach(b => { b.onclick = () => abrirCicloExp(); if (ciclosExpAbertos().length) b.innerHTML = ic('trend') + 'Abrir avaliação do mês'; }); };
+// na etapa de respostas da avaliação de experiência: links + respostas novas
+const _mLinksFx = MATC.links;
+MATC.links = function(el){ _mLinksFx.call(MATC, el);
+  if (tipoCiclo(CD) !== 'experiencia') return;
+  const up = el.querySelector('.fm-up');
+  if (up){ const d = document.createElement('details'); d.className = 'fx-man'; d.innerHTML = '<summary>Outra forma: subir a planilha de respostas do Forms (só se precisar)</summary>'; up.parentNode.insertBefore(d, up); d.appendChild(up); el.appendChild(d); }
+  const fz = (CD.config || {}).fase || '';
+  el.insertAdjacentHTML('afterbegin', cardEntradaForms(fz) || `<div class="fx-ok">${ic('check')}<div><b>Nenhuma resposta nova no momento.</b><small>Quando um gestor responder o Forms, a resposta aparece aqui. Se acabou de responder, clique em <b>Buscar respostas novas</b> no topo.</small></div></div>`);
+  if (!avalsDo(CD.id).length) el.querySelectorAll(':scope > .empty').forEach(x => x.remove());
+  const b = el.querySelector('[data-fxlan]'); if (b) b.onclick = () => lancarEntradaForms(el, fz); };
+
+/* =========================================================
+   GESTÃO DE DESEMPENHO — layout com abas, indicadores e tabela
+   ========================================================= */
+const DSP_ABAS = [['experiencia','Experiência'],['ciclo','Ciclo'],['lideranca','Liderança'],['autoavaliacao','Autoavaliação']];
+const ehDoMes = iso => { if (!iso) return false; const d = new Date(iso), h = new Date(); return d.getFullYear() === h.getFullYear() && d.getMonth() === h.getMonth(); };
+const feitoAval = (a, md) => !!(usaGestor(md) ? a.gestor_em : a.auto_em);
+function ciclosVaziosRepetidos(){
+  const grupos = {}; (S.ciclos || []).forEach(c => { const k = tipoCiclo(c) + '|' + normTxt(c.nome); (grupos[k] = grupos[k] || []).push(c); });
+  const apagar = [];
+  Object.values(grupos).forEach(g => { if (g.length < 2) return;
+    const vazio = c => !avalsDo(c.id).length, cheios = g.filter(c => !vazio(c)), vazios = g.filter(vazio).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    apagar.push(...(cheios.length ? vazios : vazios.slice(1))); });
+  return apagar;
+}
+async function limparVazios(){
+  const l = ciclosVaziosRepetidos(); if (!l.length) return;
+  if (!confirm(`Excluir ${l.length} avaliação(ões) vazia(s) e repetida(s)?\n\nSó saem as que têm 0 pessoas e nenhuma resposta. As outras ficam.`)) return;
+  let n = 0; for (const c of l){ try { await DB.remove('rh_ciclos', c.id); S.ciclos = S.ciclos.filter(x => x.id !== c.id); n++; } catch(e){} }
+  toast(n + ' avaliação(ões) vazia(s) excluída(s)'); render();
+}
+function kpisDsp(t){
+  const md = modeloAval(t), ab = (S.ciclos || []).filter(c => tipoCiclo(c) === t && c.status !== 'encerrado');
+  const avAb = ab.flatMap(c => avalsDo(c.id));
+  const K = (id, ico, rot, v, sub, cls, click) => `<button class="dsp-k ${cls || ''} ${click ? 'click' : ''}" ${click ? `data-dspk="${id}"` : 'tabindex="-1"'}><span class="ki">${ico} ${rot}</span><span class="kv">${v}</span><span class="ks">${sub}</span></button>`;
+  if (t === 'experiencia'){
+    const novas = fxPendentes().length, venc = experiencias().filter(p => p.resta >= 0 && p.resta <= 10), pend = avAb.filter(a => a.gestor_em && !(a.rh || {}).decisao);
+    const mes = (S.ciclos || []).filter(c => tipoCiclo(c) === 'experiencia').flatMap(c => avalsDo(c.id)).filter(a => ehDoMes(a.gestor_em)).length;
+    return K('novas', '📥', 'Respostas novas', novas, novas ? 'chegaram do Forms — lançar' : 'nada novo do Forms', novas ? 'hot' : '', novas)
+      + K('venc', '⏰', 'Vencendo em 10 dias', venc.length, venc.length ? 'contratos de experiência' : 'nenhum vencimento próximo', venc.length ? 'warn' : '', venc.length)
+      + K('dec', '⚖️', 'Decisões pendentes', pend.length, pend.length ? 'gestor respondeu, falta decidir' : 'tudo decidido', pend.length ? 'hot' : 'ok', pend.length)
+      + K('mes', '✅', 'Avaliados no mês', mes, MESES[new Date().getMonth()] + '/' + new Date().getFullYear(), '', 0);
+  }
+  const feitos = avAb.filter(a => feitoAval(a, md)).length, fe = (S.ciclos || []).filter(c => tipoCiclo(c) === t && c.status === 'encerrado').length;
+  return K('ab', '📂', 'Em andamento', ab.length, ab.length ? 'avaliação(ões) aberta(s)' : 'nenhuma aberta', '', ab.length)
+    + K('resp', '✅', 'Respostas recebidas', feitos, avAb.length ? `de ${avAb.length} pessoa(s)` : 'sem pessoas ainda', feitos ? 'ok' : '', 0)
+    + K('agu', '⏳', 'Aguardando resposta', avAb.length - feitos, 'nas avaliações abertas', avAb.length - feitos ? 'warn' : '', 0)
+    + K('fim', '🗂️', 'Encerradas', fe, 'no histórico', '', 0);
+}
+function tabelaDsp(t){
+  const md = modeloAval(t), exp = t === 'experiencia';
+  const cs = (S.ciclos || []).filter(c => tipoCiclo(c) === t).sort((a, b) => (a.status === 'encerrado') - (b.status === 'encerrado') || (b.created_at || '').localeCompare(a.created_at || ''));
+  if (!cs.length) return `<div class="dsp-vazio">Nenhuma ${esc(md.n.toLowerCase())} ainda. Clique em <b>${exp ? 'Nova avaliação de experiência' : 'Nova ' + esc(md.n.toLowerCase())}</b> para começar.</div>`;
+  return `<table class="dsp-t"><thead><tr><th>Avaliação</th><th class="c">Avaliados</th><th>Respostas</th><th>${exp ? 'Decisões' : 'Etapa atual'}</th><th>Prazo</th><th>Status</th><th></th></tr></thead><tbody>
+    ${cs.map(c => { const av = avalsDo(c.id), f = av.filter(a => feitoAval(a, md)).length, et = etapasDe(c), at = et.find(e => !((c.etapas || {})[e.k] || {}).ok), fim = c.status === 'encerrado';
+      const dec = av.filter(a => (a.rh || {}).decisao).length, pz = c.prazo ? diasAte(c.prazo) : null;
+      return `<tr class="${fim ? 'fim' : ''}" data-dspc="${c.id}"><td><b>${esc(c.nome)}</b>${exp && (c.config || {}).fase ? ` <span class="chip n">${c.config.fase} dias</span>` : ''}<small>${c.ini ? 'Período ' + dataCurta(c.ini) + (c.fim ? ' a ' + dataCurta(c.fim) : '') : ''}</small></td>
+        <td class="c"><b>${av.length}</b></td>
+        <td>${av.length ? `<b>${f}</b> de ${av.length}<div class="dsp-bar"><i style="width:${Math.round(f / av.length * 100)}%"></i></div>` : '<span class="muted">—</span>'}</td>
+        <td>${exp ? (av.length ? `<b>${dec}</b> de ${av.length}` : '—') : fim ? 'Encerrada' : at ? `Etapa ${et.indexOf(at) + 1} · ${esc(at.n)}` : 'Pronta para encerrar'}</td>
+        <td>${c.prazo && !fim ? `${dataCurta(c.prazo)}<small>${pz < 0 ? 'vencido' : pz === 0 ? 'hoje' : pz + ' dia(s)'}</small>` : '—'}</td>
+        <td>${fim ? '<span class="chip n">Encerrada</span>' : '<span class="chip g">● Aberta</span>'}</td><td class="seta">›</td></tr>`; }).join('')}</tbody></table>`;
+}
+function configDsp(t){
+  const m = modeloAval(t), exp = t === 'experiencia', et = etapasDe({ config:{ tipo:t }, etapas:{} });
+  return `<details class="dsp-cfg" ${S.dspCfg === t ? 'open' : ''} data-dspcfg="${t}"><summary>${ic('doc')} Configurar modelo <small>· ${exp ? 'links dos Forms, envio automático, ' : ''}itens avaliados e impressão</small><span class="sx">›</span></summary>
+    <div class="dsp-cfg-b"><div>
+      <h4>${esc(m.n)}</h4><p class="small-m" style="margin:0 0 8px">${esc(m.sub)} — ${esc(m.d)}</p>
+      <h4>O que é avaliado (${(m.itens || []).filter(Boolean).length} itens)</h4><ul>${(m.itens || []).filter(Boolean).map(x => `<li>${esc(x[0])}</li>`).join('')}</ul>
+      <div class="dsp-cfg-a">${exp ? '' : `<button class="btn btn-ghost sm" data-modfm="${t}">${ic('doc')}Modelo para o Forms</button>`}<button class="btn btn-ghost sm" data-modpr="${t}">${ic('print')}Imprimir em branco</button>${isMaster() ? `<button class="btn btn-ghost sm" data-moded="${t}">${ic('doc')}Editar itens</button>` : ''}</div>
+    </div><div>
+      ${exp ? blocoFormsExp() : ''}
+      <h4>Como funciona — etapas</h4><ol>${et.map(e => `<li><b>${esc(e.n)}</b> · ${esc(e.r)}</li>`).join('')}</ol>
+    </div></div></details>`;
+}
+telaDesempenho = function(){
+  const t = DSP_ABAS.some(x => x[0] === S.dspTab) ? S.dspTab : 'experiencia', md = modeloAval(t), exp = t === 'experiencia';
+  const conta = k => (S.ciclos || []).filter(c => tipoCiclo(c) === k && c.status !== 'encerrado').length, vz = isMaster() ? ciclosVaziosRepetidos().length : 0;
+  const temMes = exp && ciclosExpAbertos().length;
+  return `<div class="dsp-h"><div><h1>Gestão de Desempenho</h1><p>Avaliações de experiência, ciclo, liderança e autoavaliação — acompanhe as respostas e registre as decisões.</p></div>
+      <button class="btn btn-red" id="novoCiclo">${ic('plus')}Nova avaliação</button></div>
+    <div class="dsp-tabs">${DSP_ABAS.map(([k, l]) => `<button class="${k === t ? 'on' : ''}" data-dspt="${k}">${ic(ICO_AVAL[k])}${l}${conta(k) ? `<span class="n">${conta(k)}</span>` : ''}</button>`).join('')}</div>
+    ${vz ? `<div class="dsp-limpa">🧹 <span><b>${vz} avaliação(ões) vazia(s) repetida(s)</b> — criadas sem querer, sem pessoas e sem respostas.</span><button class="btn btn-ghost sm" id="dspLimpa">Limpar</button></div>` : ''}
+    <div class="dsp-kpis">${kpisDsp(t)}</div>
+    <div class="dsp-card"><div class="dsp-card-h"><b>${esc(md.n)} — avaliações</b><button class="btn btn-red sm" data-dspnovo="${t}">${ic('plus')}${exp ? 'Nova avaliação de experiência' : 'Nova ' + esc(md.n.toLowerCase())}</button></div>${tabelaDsp(t)}</div>
+    ${configDsp(t)}`;
+};
+function modalVencendo(){
+  const l = experiencias().filter(p => p.resta >= 0 && p.resta <= 10);
+  modal(`<div class="modal-head"><div class="mi">${ic('clock')}</div><div><h3>Experiências vencendo em 10 dias</h3><p>Registre a decisão antes do vencimento — depois disso o contrato prorroga ou vira prazo indeterminado.</p></div><button class="x"></button></div>
+    <div class="modal-body"><table class="dsp-t" style="border:1px solid var(--line);border-radius:12px"><thead><tr><th>Pessoa</th><th>Fase</th><th>Vence em</th></tr></thead><tbody style="cursor:default">
+    ${l.map(p => `<tr><td><b>${esc(tituloNome(p.nome))}</b><small>${esc(p.funcao || p.cargo || '')}</small></td><td>${p.fase} dias</td><td><span class="chip ${p.resta <= 3 ? '' : 'a'}">${dataCurta(p.venc)} · ${p.resta === 0 ? 'hoje' : p.resta + ' dia(s)'}</span></td></tr>`).join('')}</tbody></table></div>`, 'sm');
+}
+function ligarDsp(){
+  if (!$('.dsp-tabs')) return;
+  document.querySelectorAll('[data-dspt]').forEach(b => b.onclick = () => { S.dspTab = b.dataset.dspt; render(); });
+  document.querySelectorAll('[data-dspc]').forEach(r => r.onclick = () => { CAberta = null; ir('ciclo', r.dataset.dspc); });
+  document.querySelectorAll('[data-dspnovo]').forEach(b => b.onclick = () => b.dataset.dspnovo === 'experiencia' ? abrirCicloExp() : novoCiclo(b.dataset.dspnovo));
+  document.querySelectorAll('[data-dspcfg]').forEach(d => d.ontoggle = () => { S.dspCfg = d.open ? d.dataset.dspcfg : ''; });
+  if ($('#dspLimpa')) $('#dspLimpa').onclick = limparVazios;
+  const K = { novas: () => abrirCicloExp('links'), venc: modalVencendo,
+    dec: () => { const c = ciclosExpAbertos().find(x => avalsDo(x.id).some(a => a.gestor_em && !(a.rh || {}).decisao)); if (c){ CAberta = 'dec'; ir('ciclo', c.id); } },
+    ab: () => { const c = (S.ciclos || []).find(x => tipoCiclo(x) === (S.dspTab || 'experiencia') && x.status !== 'encerrado'); if (c){ CAberta = null; ir('ciclo', c.id); } } };
+  document.querySelectorAll('[data-dspk]').forEach(b => b.onclick = () => (K[b.dataset.dspk] || (() => {}))());
+}
+const _ligarCicloDsp = ligarCiclo;
+ligarCiclo = function(){ _ligarCicloDsp.apply(this, arguments); ligarDsp(); };
+
+/* =========================================================
+   AVALIAÇÃO DE EXPERIÊNCIA — fluxo da ILED em 6 etapas
+   ========================================================= */
+const ETAPA_EXP_ENVIO = { k:'envio', n:'Enviar para quem avalia', r:'RH', d:'Mande o link do Forms para o gestor de cada pessoa que está completando o período.', dica:'' };
+const ETAPA_EXP_FB = { k:'feedback', n:'Feedback ao colaborador', r:'RH e gestor', d:'Monte a devolutiva para o colaborador escolhendo o que entra — só o que for construtivo.', dica:'' };
+const ETAPA_EXP_FIM = { k:'fim', n:'Encerrar o processo', r:'RH', d:'', dica:'' };
+ETAPA_EXP_PLANO.n = 'Dados da avaliação'; ETAPA_EXP_PLANO.d = ''; ETAPA_EXP_RESP.n = 'Respostas recebidas'; ETAPA_EXP_RESP.r = 'RH';
+const _etapasDeExp = etapasDe;
+etapasDe = function(c){ return tipoCiclo(c) === 'experiencia' ? [ETAPA_EXP_PLANO, ETAPA_EXP_ENVIO, ETAPA_EXP_RESP, ETAPA_DEC, ETAPA_EXP_FB, ETAPA_EXP_FIM] : _etapasDeExp.apply(this, arguments); };
+const faseCD = () => String((CD.config || {}).fase || '');
+
+// 1. Dados da avaliação
+const _mPlanoExp = MATC.plano;
+MATC.plano = function(el){
+  if (tipoCiclo(CD) !== 'experiencia') return _mPlanoExp.call(MATC, el);
+  const f = faseCD();
+  el.innerHTML = `<div class="field"><label>Nome da avaliação</label><input data-xpn value="${esc(CD.nome || '')}"></div>
+    <div class="field"><label>Tipo / período</label><div class="xp-fase">${['45','90'].map(x => `<label class="${f === x ? 'on' : ''}"><input type="radio" name="xpf" value="${x}" ${f === x ? 'checked' : ''}><span><b>${x} dias</b><small>${x === '45' ? 'Fim do 1º período — seguir ou não prorrogar' : 'Fim da experiência — efetivar ou não'}</small></span></label>`).join('')}</div></div>
+    <div class="field" style="max-width:260px"><label>Prazo para o gestor responder</label><input type="date" data-xpp value="${esc(CD.prazo || '')}"></div>`;
+  el.querySelector('[data-xpn]').oninput = e => { CD.nome = e.target.value; cicloPendente(); };
+  el.querySelector('[data-xpp]').onchange = e => { CD.prazo = e.target.value; cicloPendente(); };
+  el.querySelectorAll('[name=xpf]').forEach(r => r.onchange = () => { const auto = /^EXPERIENCIAS? /.test(normTxt(CD.nome || '')); CD.config.fase = r.value; if (auto) CD.nome = nomeExp(r.value); cicloPendente(); MATC.plano(el); });
+};
+
+// 2. Enviar para quem avalia
+MATC.envio = function(el){
+  const f = faseCD(), L = fxLinks(), u = (L[f] || '').trim();
+  if (!f){ el.innerHTML = '<div class="empty" style="padding:12px">Escolha o período (45 ou 90 dias) na etapa 1.</div>'; return; }
+  const vence = experiencias().filter(p => String(p.fase) === f && p.resta >= -3 && p.resta <= 20);
+  el.innerHTML = (u ? `<div class="xp-link"><div class="u"><b>Link do Forms — ${f} dias</b><small>${esc(u)}</small></div>
+      <button class="btn btn-ghost sm" data-xpc>${ic('copy')}Copiar link</button><button class="btn btn-ghost sm" data-xpz>${ic('chat')}Mensagem geral</button><a class="btn btn-ghost sm" href="${esc(u)}" target="_blank" rel="noopener">Abrir</a></div>`
+    : `<div class="xp-link"><div class="u"><b>O link do Forms de ${f} dias ainda não foi cadastrado.</b><small>Cadastre uma vez e ele fica salvo para as próximas avaliações.</small></div>${isMaster() ? `<button class="btn btn-red sm" data-fxed>${ic('doc')}Cadastrar links</button>` : ''}</div>`)
+    + tabelaEnvio(f, u, el);
+  if (el.querySelector('[data-xpc]')) el.querySelector('[data-xpc]').onclick = () => copiarTxt(u, 'Link copiado');
+  if (el.querySelector('[data-xpz]')) el.querySelector('[data-xpz]').onclick = () => window.open(linkZap(fxMsg(f, u), ''), '_blank');
+  ligarFormsExp(el); ligarEnvio(el, f, u);
+};
+
+
+/* =========================================================
+   CONTROLE DE ENVIO — quem recebeu o link, quem respondeu
+   ========================================================= */
+const enLista = () => { CD.config.envios = CD.config.envios || []; return CD.config.envios; };
+function enSincronizar(f){
+  const L = enLista(), rem = new Set((CD.config.envRem || []).map(normTxt)); let mudou = false;
+  experiencias().filter(p => String(p.fase) === f && p.resta >= -3 && p.resta <= 20).forEach(p => {
+    if (rem.has(normTxt(p.nome)) || L.some(x => nomesParecidos(x.nome, p.nome))) return;
+    L.push({ id:uuid(), nome:p.nome, funcao:p.funcao || p.cargo || '', gestor:gestorDe(p.nome) || '', venc:p.venc, origem:'quadro' }); mudou = true; });
+  // quem já respondeu nesta avaliação e não está na lista entra também
+  avalsDo(CD.id).forEach(a => { if (!L.some(x => nomesParecidos(x.nome, a.nome))) { L.push({ id:uuid(), nome:a.nome, funcao:a.funcao || '', gestor:a.gestor || '', venc:(a.rh || {}).venc || '', origem:'resposta' }); mudou = true; } });
+  if (mudou) cicloPendente();
+}
+function enStatus(x, f){
+  const a = avalsDo(CD.id).find(v => nomesParecidos(v.nome, x.nome) && v.gestor_em);
+  if (a) return { k:'ok', t:'Recebida', d:a.gestor_em };
+  if (fxPendentes(f).some(e => nomesParecidos(fxNomeDe(e), x.nome))) return { k:'chegou', t:'Chegou — lançar na etapa 3' };
+  if (x.enviado_em) return { k:'agu', t:'Aguardando' };
+  return { k:'nao', t:'Não enviada' };
+}
+const enMsg = (f, u, x) => `Olá${x.gestor ? ', ' + primeiroNome(tituloNome(x.gestor)) : ''}! 😊\n\nPreciso da sua *avaliação de experiência de ${f} dias* de *${tituloNome(x.nome)}*${x.funcao ? ' (' + tituloNome(x.funcao) + ')' : ''}.\n\nÉ rapidinho, responda por este link:\n${u}\n\n${CD.prazo ? 'Por favor, responda até *' + dataCurta(CD.prazo) + '*.' : 'Por favor, responda assim que puder.'}${x.venc ? ' O período vence em ' + dataCurta(x.venc) + ' e precisamos decidir antes disso.' : ''}\n\nObrigada!\nRH — Grupo ILED`;
+const enLembrete = (f, u, x) => `Olá${x.gestor ? ', ' + primeiroNome(tituloNome(x.gestor)) : ''}! Passando para lembrar da *avaliação de experiência de ${f} dias* de *${tituloNome(x.nome)}*. 🙏\n\n${x.venc ? 'O período vence em *' + dataCurta(x.venc) + '* — ' : ''}sem a sua resposta não conseguimos decidir a continuidade do contrato a tempo.\n\nLink: ${u}\n\nObrigada!\nRH — Grupo ILED`;
+function modalAddEnvio(f, el){
+  modal(`<div class="modal-head"><div class="mi">${ic('users')}</div><div><h3>Adicionar pessoa</h3><p>Quem está completando ${f} dias e vai ser avaliado.</p></div><button class="x"></button></div>
+    <div class="modal-body"><div class="field"><label>Nome do colaborador *</label><input id="enN" list="enDl"><datalist id="enDl">${quadro().pessoas.map(p => `<option value="${esc(p.nome)}">`).join('')}</datalist></div>
+      <div class="row2"><div class="field"><label>Gestor (quem avalia)</label><input id="enG"></div><div class="field"><label>Função</label><input id="enF"></div></div>
+      <div class="field" style="max-width:220px"><label>Vence em</label><input type="date" id="enV"></div><div class="err" id="enErr"></div></div>
+    <div class="modal-foot"><button class="btn btn-red" id="enOk">${ic('plus')}Adicionar</button></div>`, 'sm');
+  $('#enN').onchange = () => { const p = quadro().pessoas.find(x => nomesParecidos(x.nome, $('#enN').value)); if (!p) return;
+    if (!$('#enG').value) $('#enG').value = tituloNome(gestorDe(p.nome) || ''); if (!$('#enF').value) $('#enF').value = p.funcao || p.cargo || '';
+    if (!$('#enV').value && p.data) $('#enV').value = addDias(p.data, f === '90' ? 89 : 44); };
+  $('#enOk').onclick = () => { const nome = $('#enN').value.trim(); if (!nome){ $('#enErr').textContent = 'Preencha o nome.'; return; }
+    enLista().push({ id:uuid(), nome:nome.toUpperCase(), gestor:$('#enG').value.trim(), funcao:$('#enF').value.trim(), venc:$('#enV').value, origem:'manual' });
+    CD.config.envRem = (CD.config.envRem || []).filter(n => normTxt(n) !== normTxt(nome)); cicloPendente(); fecharModal(); MATC.envio(el); };
+}
+function tabelaEnvio(f, u, el){
+  enSincronizar(f);
+  const L = enLista(), st = L.map(x => ({ x, s:enStatus(x, f) })), dd = x => x.venc ? diasAte(x.venc) : null;
+  const env = L.filter(x => x.enviado_em).length, resp = st.filter(y => y.s.k === 'ok').length, agu = st.filter(y => y.s.k === 'agu' || y.s.k === 'chegou').length;
+  const urg = st.filter(y => y.s.k !== 'ok' && dd(y.x) !== null && dd(y.x) <= 5).length;
+  const ord = st.sort((a, b) => (a.s.k === 'ok') - (b.s.k === 'ok') || (dd(a.x) ?? 999) - (dd(b.x) ?? 999));
+  const ICO = { ok:['g','Recebida'], chegou:['a','Chegou'], agu:['a','Aguardando'], nao:['n','Não enviada'] };
+  return `<div class="mat-sec" style="margin-top:4px"><b>Controle de envio</b><span>Uma linha por colaborador avaliado. O envio fica registrado quando você clica em Enviar; a resposta é marcada sozinha quando o Forms chega.</span></div>
+    <div class="en-plac"><div><b>${env}</b><small>📤 enviada(s) de ${L.length}</small></div><div class="ok"><b>${resp}</b><small>✅ respondida(s)</small></div><div class="${agu ? 'warn' : ''}"><b>${agu}</b><small>⏳ aguardando resposta</small></div><div class="${urg ? 'hot' : ''}"><b>${urg}</b><small>⚠️ vencendo em até 5 dias sem resposta</small></div></div>
+    ${L.length ? `<div class="tri-wrap"><table class="tri en-t"><thead><tr><th>Colaborador</th><th>Gestor (avalia)</th><th>Vence em</th><th>Enviado</th><th>Resposta</th><th></th></tr></thead><tbody>
+      ${ord.map(({ x, s: y }) => { const d = dd(x), lem = x.lembretes || [];
+        return `<tr class="${y.k !== 'ok' && d !== null && d <= 5 ? 'urg' : ''}"><td><b>${esc(tituloNome(x.nome))}</b><small>${esc(tituloNome(x.funcao || ''))}</small></td>
+          <td><input class="en-g" data-eng="${x.id}" value="${esc(tituloNome(x.gestor || ''))}" placeholder="nome do gestor"></td>
+          <td>${x.venc ? `<span class="chip ${d < 0 ? '' : d <= 5 ? '' : d <= 10 ? 'a' : 'n'}">${dataCurta(x.venc)} · ${d < 0 ? 'vencido' : d === 0 ? 'hoje' : d + ' dia(s)'}</span>` : '<span class="muted">—</span>'}</td>
+          <td>${x.enviado_em ? `<span class="en-st">✅ ${fmtDH(x.enviado_em)}</span>${lem.length ? `<small>🔔 ${lem.length} lembrete(s) · último ${fmtDH(lem[lem.length - 1])}</small>` : ''}` : '<span class="muted">—</span>'}</td>
+          <td><span class="en-st"><span class="pd bg-${ICO[y.k][0]}"></span>${esc(y.t)}</span>${y.d ? `<small>em ${fmtDH(y.d)}</small>` : ''}</td>
+          <td><div class="en-acts">${y.k === 'ok' ? '' : !u ? '' : x.enviado_em ? (y.k === 'chegou' ? '' : `<button class="btn btn-ghost sm" data-enl="${x.id}">🔔 Lembrar</button>`) : `<button class="btn btn-red sm" data-ene="${x.id}">${ic('chat')}Enviar</button>`}
+            ${x.enviado_em || y.k === 'ok' ? '' : `<button class="icon-btn" data-enm="${x.id}" title="Marcar como enviada (mandei por fora)">${ic('check')}</button>`}<button class="icon-btn" data-enx="${x.id}" title="Tirar da lista">${ic('trash')}</button></div></td></tr>`; }).join('')}</tbody></table></div>`
+      : `<div class="empty" style="padding:12px">Ninguém na lista. O Quadro de pessoas não mostrou ninguém completando ${f} dias — adicione à mão.</div>`}
+    <div class="cline-r" style="margin-top:10px"><button class="btn btn-ghost sm" data-enadd>${ic('plus')}Adicionar pessoa</button></div>`;
+}
+function ligarEnvio(el, f, u){
+  const X = id => enLista().find(x => x.id === id), re = () => MATC.envio(el);
+  el.querySelectorAll('[data-ene]').forEach(b => b.onclick = () => { const x = X(b.dataset.ene); window.open(linkZap(enMsg(f, u, x), ''), '_blank'); x.enviado_em = new Date().toISOString(); cicloPendente(); re(); });
+  el.querySelectorAll('[data-enl]').forEach(b => b.onclick = () => { const x = X(b.dataset.enl); window.open(linkZap(enLembrete(f, u, x), ''), '_blank'); (x.lembretes = x.lembretes || []).push(new Date().toISOString()); cicloPendente(); re(); });
+  el.querySelectorAll('[data-enm]').forEach(b => b.onclick = () => { const x = X(b.dataset.enm); x.enviado_em = new Date().toISOString(); cicloPendente(); re(); });
+  el.querySelectorAll('[data-enx]').forEach(b => b.onclick = () => { const x = X(b.dataset.enx); if (!confirm('Tirar ' + tituloNome(x.nome) + ' da lista de envio?')) return;
+    CD.config.envios = enLista().filter(y => y.id !== x.id); (CD.config.envRem = CD.config.envRem || []).push(x.nome); cicloPendente(); re(); });
+  el.querySelectorAll('[data-eng]').forEach(i => i.onchange = () => { X(i.dataset.eng).gestor = i.value.trim(); cicloPendente(); });
+  const add = el.querySelector('[data-enadd]'); if (add) add.onclick = () => modalAddEnvio(f, el);
+}
+
+// 5. Feedback ao colaborador — com filtro do que entra
+const FB_FILTROS = [['fortes','Pontos fortes (do gestor)', true],['dest','Onde se destacou (notas 4 e 5)', true],['aten','Pontos de atenção (do gestor)', true],['desenv','O que desenvolver (notas 1 e 2)', true],['notas','Notas de cada item', false],['dec','Resultado (seguir / efetivar)', false]];
+const decPositiva = d => /^SEGUIR|^EFETIVAR/.test(normTxt(d || ''));
+function textoFeedbackExp(a, fil){
+  const r = a.resp_gestor || {}, n = r.n || {}, its = itensForm(a.form), fase = (a.form || {}).fase || (a.rh || {}).fase || 45, nome = primeiroNome(tituloNome(a.nome));
+  const dest = its.filter(x => +n[x.id] >= 4), dev = its.filter(x => n[x.id] && +n[x.id] <= 2);
+  const dec = (a.rh || {}).decisao || r.dec || '';
+  const L = [`Olá, ${nome}! 😊`, '', `Concluímos a sua avaliação de experiência de ${fase} dias. Queremos compartilhar com você o retorno do seu gestor${a.gestor ? ', ' + tituloNome(a.gestor) : ''}, para que você saiba o que está indo bem e no que pode crescer.`];
+  if (fil.fortes && r.fortes) L.push('', '✅ *Seus pontos fortes*', r.fortes);
+  if (fil.dest && dest.length) L.push('', '🌟 *Onde você se destacou*', ...dest.map(x => '• ' + x.n));
+  if (fil.aten && r.desenv) L.push('', '📌 *Pontos de atenção*', r.desenv);
+  if (fil.desenv && dev.length) L.push('', '🎯 *O que desenvolver*', ...dev.map(x => '• ' + x.n + (x.d ? ' — ' + x.d : '')));
+  if (fil.notas) L.push('', '📊 *Sua avaliação (de 1 a 5)*', ...its.filter(x => n[x.id]).map(x => `• ${x.n}: ${n[x.id]}`));
+  if (fil.dec && decPositiva(dec)) L.push('', /EFETIVAR/.test(normTxt(dec)) ? '🎉 *Resultado:* parabéns, você foi efetivado(a) na ILED!' : /ACOMPANHAMENTO/.test(normTxt(dec)) ? '➡️ *Resultado:* você segue para o 2º período da experiência, com um plano de acompanhamento junto ao seu gestor.' : '➡️ *Resultado:* você segue para o 2º período da experiência.');
+  L.push('', 'Conte com a gente para o que precisar. Bom trabalho!', 'Equipe de RH — Grupo ILED');
+  return L.join('\n');
+}
+const _mFeedbackExp = MATC.feedback;
+MATC.feedback = function(el){
+  if (tipoCiclo(CD) !== 'experiencia') return _mFeedbackExp.call(MATC, el);
+  const av = avalsDo(CD.id).filter(a => a.gestor_em), A = id => S.avals.find(a => a.id === id), ab = S.fbAberto;
+  if (!av.length){ el.innerHTML = vazioCands('O feedback aparece aqui quando o gestor responder a avaliação.'); return; }
+  el.innerHTML = `<p class="small-m" style="margin-bottom:10px">${av.filter(a => (a.rh || {}).fbFeito).length} de ${av.length} feedback(s) entregue(s).</p>` + av.map(a => { const r = a.rh || {}, fil = { ...Object.fromEntries(FB_FILTROS.map(x => [x[0], x[2]])), ...(r.fbFil || {}) }, neg = !decPositiva(r.decisao || (a.resp_gestor || {}).dec);
+    return `<div class="xp-fb"><div class="xp-fb-h" data-xft="${a.id}"><span class="pd bg-${corParecer(a)}"></span><div><b>${esc(tituloNome(a.nome))}</b><small>${esc(a.funcao || '')} · nota ${fmtN(mGest(a))} · ${esc(r.decisao || (a.resp_gestor || {}).dec || 'sem decisão')}</small></div><span class="chip ${r.fbFeito ? 'g' : 'a'}">${r.fbFeito ? 'Entregue em ' + dataCurta(r.fbFeito) : 'Feedback pendente'}</span></div>
+      ${ab === a.id ? `<div class="xp-fb-b"><div class="xp-fil"><b>O que entra no feedback</b>${FB_FILTROS.map(([k, l]) => { const dis = k === 'dec' && neg; return `<label class="${dis ? 'dis' : ''}" title="${dis ? 'Resultado negativo: comunique pessoalmente, junto com o DP' : ''}"><input type="checkbox" data-xff="${a.id}|${k}" ${fil[k] && !dis ? 'checked' : ''} ${dis ? 'disabled' : ''}> ${l}</label>`; }).join('')}
+          ${neg ? '<p class="small-m" style="margin-top:8px">⚠️ “Não prorrogar / Não efetivar” não vai no texto: comunique pessoalmente, com o DP.</p>' : ''}
+          <div class="field" style="margin-top:12px"><label>Entregue em</label><input type="date" data-xfd="${a.id}" value="${esc(r.fbFeito || '')}"></div></div>
+        <div><textarea data-xftx="${a.id}">${esc(r.fbTxt !== undefined ? r.fbTxt : textoFeedbackExp(a, fil))}</textarea>
+          <div class="cline-r" style="margin-top:8px"><button class="btn btn-ghost sm" data-xfc="${a.id}">${ic('copy')}Copiar</button><button class="btn btn-red sm" data-xfz="${a.id}">${ic('chat')}Enviar no WhatsApp</button><button class="btn btn-ghost sm" data-xfp="${a.id}">${ic('print')}Imprimir</button><button class="lnk" data-xfr="${a.id}" style="margin-left:auto">montar de novo</button></div></div></div>` : ''}</div>`; }).join('');
+  const re = () => MATC.feedback(el), txt = a => { const r = a.rh || {}, fil = { ...Object.fromEntries(FB_FILTROS.map(x => [x[0], x[2]])), ...(r.fbFil || {}) }; return r.fbTxt !== undefined ? r.fbTxt : textoFeedbackExp(a, fil); };
+  el.querySelectorAll('[data-xft]').forEach(h => h.onclick = () => { S.fbAberto = S.fbAberto === h.dataset.xft ? null : h.dataset.xft; re(); });
+  el.querySelectorAll('[data-xff]').forEach(c => c.onchange = () => { const [id, k] = c.dataset.xff.split('|'), a = A(id); a.rh = a.rh || {}; a.rh.fbFil = { ...(a.rh.fbFil || {}), [k]: c.checked }; delete a.rh.fbTxt; avPend(id); re(); });
+  el.querySelectorAll('[data-xftx]').forEach(t => t.oninput = () => { const a = A(t.dataset.xftx); a.rh = a.rh || {}; a.rh.fbTxt = t.value; avPend(a.id); });
+  el.querySelectorAll('[data-xfr]').forEach(b => b.onclick = () => { const a = A(b.dataset.xfr); a.rh = a.rh || {}; delete a.rh.fbTxt; avPend(a.id); re(); });
+  el.querySelectorAll('[data-xfd]').forEach(i => i.onchange = () => { const a = A(i.dataset.xfd); a.rh = a.rh || {}; a.rh.fbFeito = i.value; avPend(a.id); });
+  el.querySelectorAll('[data-xfc]').forEach(b => b.onclick = () => copiarTxt(txt(A(b.dataset.xfc)), 'Feedback copiado'));
+  el.querySelectorAll('[data-xfz]').forEach(b => b.onclick = () => { const a = A(b.dataset.xfz), p = quadro().pessoas.find(x => nomesParecidos(x.nome, a.nome)) || {}; window.open(linkZap(txt(a), p.telefone || p.tel || p.celular || ''), '_blank'); });
+  el.querySelectorAll('[data-xfp]').forEach(b => b.onclick = () => { const a = A(b.dataset.xfp), e = empById(a.empresa) || empById('iled_bsb');
+    const corpo = `<h1 class="pg-t">FEEDBACK — AVALIAÇÃO DE EXPERIÊNCIA<br><span class="sub">${esc(tituloNome(a.nome))} · ${esc(a.funcao || '')}</span></h1><div class="pg-box" style="white-space:pre-wrap;font-size:12px;line-height:1.6">${esc(txt(a).replace(/\*/g, ''))}</div><div class="keep">${sigs([[tituloNome(a.nome), 'ciente'], ['RH', '']])}</div>`;
+    PRINT = true; let h; try { h = pagina(e, 'RH-AVD-FB', corpo, true); } finally { PRINT = false; } imprimirHTML(h, 'Feedback — ' + tituloNome(a.nome)); });
+};
+
+// título da avaliação: mostra o período 45/90
+const _telaCicloExp = telaCiclo;
+telaCiclo = function(id){ let h = _telaCicloExp.apply(this, arguments); const c = (S.ciclos || []).find(x => x.id === id);
+  if (c && tipoCiclo(c) === 'experiencia') h = h.replace(/Período avaliado [^·]*· /, (c.config || {}).fase ? c.config.fase + ' dias · ' : '');
+  return h; };
+
+// menu de etapas horizontal + conteúdo da etapa escolhida
+desenharCiclo = function(){
+  const box = $('#cSteps'); if (!box) return;
+  const ET = etapasDe(CD), at = ET.find(e => !(CD.etapas[e.k] || {}).ok);
+  if (!CAberta || !ET.some(e => e.k === CAberta)) CAberta = at ? at.k : ET[ET.length - 1].k;
+  const i = ET.findIndex(e => e.k === CAberta), e = ET[i], et = CD.etapas[e.k] || {}, ok = !!et.ok, prox = ET[i + 1], ant = ET[i - 1];
+  box.innerHTML = `<div class="stp">${ET.map((x, j) => { const o = !!(CD.etapas[x.k] || {}).ok, atual = at && at.k === x.k;
+      return `<button class="stp-i ${o ? 'ok' : ''} ${atual ? 'atual' : ''} ${x.k === CAberta ? 'on' : ''}" data-ctog="${x.k}"><span class="stp-n">${o ? '✓' : j + 1}</span><span class="stp-t"><b>${esc(x.n)}</b><small>${o ? 'Concluída' : atual ? 'Etapa atual' : esc(x.r)}</small></span></button>`; }).join('')}</div>
+    <div class="stp-card"><div class="stp-card-h"><div><span class="k">Etapa ${i + 1} de ${ET.length}</span><h2>${esc(e.n)}</h2>${e.d ? `<p>${esc(e.d)}</p>` : ''}</div>${ok ? `<span class="chip g">Concluída${et.data ? ' em ' + dataCurta(et.data) : ''}</span>` : ''}</div>
+      ${e.dica ? `<div class="ed-note" style="margin:0 0 14px">${ic('spark')}<div>${esc(e.dica)}</div></div>` : ''}
+      <div class="vmat" data-cmat="${e.k}"></div>
+      <div class="stp-foot">${ant ? `<button class="btn btn-ghost sm" data-cgo="${ant.k}">← ${esc(ant.n)}</button>` : ''}<div class="dir">
+        ${ok ? `<button class="btn btn-ghost sm" data-creabre="${e.k}">Reabrir etapa</button>${prox ? `<button class="btn btn-red sm" data-cgo="${prox.k}">${esc(prox.n)} →</button>` : ''}` : e.k === 'fim' ? '' : `<button class="btn btn-red sm" data-cok="${e.k}">${ic('check')}Concluir${prox ? ' e ir para ' + esc(prox.n) : ' etapa'}</button>`}</div></div></div>`;
+  if ($('#cProg')) $('#cProg').style.width = progressoCiclo(CD) + '%';
+  box.querySelectorAll('[data-ctog],[data-cgo]').forEach(b => b.onclick = () => { CAberta = b.dataset.ctog || b.dataset.cgo; desenharCiclo(); window.scrollTo({ top: box.offsetTop - 90, behavior:'smooth' }); });
+  box.querySelectorAll('[data-cok]').forEach(b => b.onclick = () => { const k = b.dataset.cok; CD.etapas[k] = { ok:true, data:hojeISO() }; const n = ET.find(x => !(CD.etapas[x.k] || {}).ok); CAberta = n ? n.k : k; desenharCiclo(); salvarCiclo(); });
+  box.querySelectorAll('[data-creabre]').forEach(b => b.onclick = () => { CD.etapas[b.dataset.creabre] = { ok:false }; desenharCiclo(); salvarCiclo(); });
+  box.querySelectorAll('[data-cmat]').forEach(el => { const k = el.dataset.cmat, L = tipoCiclo(CD) === 'lideranca' && MATC[k + 'L'], f = L || MATC[k]; if (f) f(el); });
+};
+
 const _carregarAc = carregarDados;
-carregarDados = async function(){ const r = await _carregarAc.apply(this, arguments); if (isMaster()) await carregarPerfis(); return r; };
+carregarDados = async function(){ const r = await _carregarAc.apply(this, arguments); if (isMaster()) await carregarPerfis();
+  try { S.fentrada = LOCAL ? [] : await DB.all('rh_forms_entrada'); } catch(e){ S.fentrada = []; } return r; };
 iniciar();
 </script>
 </body>
