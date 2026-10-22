@@ -747,6 +747,19 @@ select.pede{border-color:var(--amber)!important;background:#FFFBF2}
 .en-t tr.urg td{background:#fff6f6}
 .en-st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .en-acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+/* ---------- MENSAGENS E LINKS PERSONALIZADOS ---------- */
+.mg-l{display:grid;gap:14px}
+.mg-i label{display:flex;align-items:baseline;gap:8px;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:6px}
+.mg-i label small{font-weight:500;color:var(--muted);font-size:12px}
+.mg-i label .lnk{margin-left:auto}
+.mg-i textarea{width:100%;min-height:120px;border:1.5px solid var(--line2);border-radius:12px;padding:10px 12px;font:13px/1.5 inherit;font-family:inherit;resize:vertical}
+.mg-ph{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.mg-ph button{border:1px dashed var(--line2);background:var(--tile);border-radius:8px;padding:3px 8px;font:600 12px/1.4 inherit;font-family:inherit;color:var(--text);cursor:pointer}
+.mg-grp{font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--red);margin:6px 0 -4px}
+.pp-ok{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--green)}
+.pp-no{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#B7791F}
+.en-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}.en-top .mat-sec{margin:0;flex:1}
+.upd-at{font-size:11.5px;color:var(--muted)}
 /* ---------- GESTÃO DE DESEMPENHO (layout profissional) ---------- */
 .dsp-h{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .dsp-h h1{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.4px;line-height:1.15}
@@ -851,7 +864,7 @@ a.btn{text-decoration:none}
     <div style="height:18px"></div>
     <div class="user-card">
       <div class="avatar" id="uAv"></div>
-      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div></div>
+      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 22/10 · 14h</div></div>
       <button id="btnSair" title="Sair"></button>
     </div>
   </aside>
@@ -6715,7 +6728,7 @@ function fxNomeDe(x){ const h = x.head || [], i = h.findIndex(c => normTxt(c) ==
 function fxPendentes(fase){ const ja = new Set(S.avals.map(a => (a.resp_gestor || {}).fonte).filter(Boolean));
   return fxEntradas().filter(x => (x.status || 'nova') === 'nova' && !ja.has(fxFonte(x)) && (!fase || x.form === 'exp' + fase)); }
 async function copiarTxt(txt, ok){ try { await navigator.clipboard.writeText(txt); toast(ok); } catch(e){ const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast(ok); } }
-const fxMsg = (fase, url) => `Olá! 😊 Segue o link da *avaliação de experiência de ${fase} dias* da ILED.\n\nResponda uma vez para cada pessoa da sua equipe que está completando ${fase} dias:\n${url}\n\nSua resposta é muito importante para decidirmos a continuidade do contrato dentro do prazo. Obrigada!`;
+const fxMsg = (fase, url) => preencherMsg(msgExp('geral'), { fase, link:url, prazo: typeof CD !== 'undefined' && CD && CD.prazo ? dataCurta(CD.prazo) : '' });
 
 
 const ciclosExpAbertos = () => (S.ciclos || []).filter(c => c.status !== 'encerrado' && tipoCiclo(c) === 'experiencia');
@@ -6871,7 +6884,8 @@ MATC.links = function(el){ _mLinksFx.call(MATC, el);
   const up = el.querySelector('.fm-up');
   if (up){ const d = document.createElement('details'); d.className = 'fx-man'; d.innerHTML = '<summary>Outra forma: subir a planilha de respostas do Forms (só se precisar)</summary>'; up.parentNode.insertBefore(d, up); d.appendChild(up); el.appendChild(d); }
   const fz = (CD.config || {}).fase || '';
-  el.insertAdjacentHTML('afterbegin', cardEntradaForms(fz) || `<div class="fx-ok">${ic('check')}<div><b>Nenhuma resposta nova no momento.</b><small>Quando um gestor responder o Forms, a resposta aparece aqui. Se acabou de responder, clique em <b>Buscar respostas novas</b> no topo.</small></div></div>`);
+  el.insertAdjacentHTML('afterbegin', `<div class="en-top" style="justify-content:flex-end">${btnAtualizar()}</div>` + (cardEntradaForms(fz) || `<div class="fx-ok">${ic('check')}<div><b>Nenhuma resposta nova no momento.</b><small>Quando um gestor responder o Forms, a resposta aparece aqui. Se acabou de responder, clique em <b>Buscar respostas novas</b> no topo.</small></div></div>`));
+  el.querySelectorAll('[data-upd]').forEach(b => b.onclick = () => atualizarRespostas());
   if (!avalsDo(CD.id).length) el.querySelectorAll(':scope > .empty').forEach(x => x.remove());
   const b = el.querySelector('[data-fxlan]'); if (b) b.onclick = () => lancarEntradaForms(el, fz); };
 
@@ -6933,7 +6947,7 @@ function configDsp(t){
     <div class="dsp-cfg-b"><div>
       <h4>${esc(m.n)}</h4><p class="small-m" style="margin:0 0 8px">${esc(m.sub)} — ${esc(m.d)}</p>
       <h4>O que é avaliado (${(m.itens || []).filter(Boolean).length} itens)</h4><ul>${(m.itens || []).filter(Boolean).map(x => `<li>${esc(x[0])}</li>`).join('')}</ul>
-      <div class="dsp-cfg-a">${exp ? '' : `<button class="btn btn-ghost sm" data-modfm="${t}">${ic('doc')}Modelo para o Forms</button>`}<button class="btn btn-ghost sm" data-modpr="${t}">${ic('print')}Imprimir em branco</button>${isMaster() ? `<button class="btn btn-ghost sm" data-moded="${t}">${ic('doc')}Editar itens</button>` : ''}</div>
+      <div class="dsp-cfg-a">${exp ? `<button class="btn btn-ghost sm" data-mged>${ic('chat')}Editar mensagens</button>` : `<button class="btn btn-ghost sm" data-modfm="${t}">${ic('doc')}Modelo para o Forms</button>`}<button class="btn btn-ghost sm" data-modpr="${t}">${ic('print')}Imprimir em branco</button>${isMaster() ? `<button class="btn btn-ghost sm" data-moded="${t}">${ic('doc')}Editar itens</button>` : ''}</div>
     </div><div>
       ${exp ? blocoFormsExp() : ''}
       <h4>Como funciona — etapas</h4><ol>${et.map(e => `<li><b>${esc(e.n)}</b> · ${esc(e.r)}</li>`).join('')}</ol>
@@ -6964,13 +6978,14 @@ function ligarDsp(){
   document.querySelectorAll('[data-dspnovo]').forEach(b => b.onclick = () => b.dataset.dspnovo === 'experiencia' ? abrirCicloExp() : novoCiclo(b.dataset.dspnovo));
   document.querySelectorAll('[data-dspcfg]').forEach(d => d.ontoggle = () => { S.dspCfg = d.open ? d.dataset.dspcfg : ''; });
   if ($('#dspLimpa')) $('#dspLimpa').onclick = limparVazios;
+  document.querySelectorAll('[data-mged]').forEach(b => b.onclick = modalMensagensExp);
   const K = { novas: () => abrirCicloExp('links'), venc: modalVencendo,
     dec: () => { const c = ciclosExpAbertos().find(x => avalsDo(x.id).some(a => a.gestor_em && !(a.rh || {}).decisao)); if (c){ CAberta = 'dec'; ir('ciclo', c.id); } },
     ab: () => { const c = (S.ciclos || []).find(x => tipoCiclo(x) === (S.dspTab || 'experiencia') && x.status !== 'encerrado'); if (c){ CAberta = null; ir('ciclo', c.id); } } };
   document.querySelectorAll('[data-dspk]').forEach(b => b.onclick = () => (K[b.dataset.dspk] || (() => {}))());
 }
 const _ligarCicloDsp = ligarCiclo;
-ligarCiclo = function(){ _ligarCicloDsp.apply(this, arguments); ligarDsp(); };
+ligarCiclo = function(){ _ligarCicloDsp.apply(this, arguments); ligarDsp(); if ($('#cAtual')) $('#cAtual').onclick = () => atualizarRespostas(); };
 
 /* =========================================================
    AVALIAÇÃO DE EXPERIÊNCIA — fluxo da ILED em 6 etapas
@@ -7012,6 +7027,110 @@ MATC.envio = function(el){
 
 
 /* =========================================================
+   MODELOS DE MENSAGEM (editáveis) + LINK PERSONALIZADO + ATUALIZAR
+   ========================================================= */
+const MSG_EXP_PADRAO = {
+  envio:'Olá, {gestor}! 😊\n\nPreciso da sua *avaliação de experiência de {fase} dias* de *{colaborador}* ({funcao}).\n\nÉ rapidinho, é só responder por este link:\n{link}\n\nPor favor, responda até *{prazo}*. O período vence em {vence} e precisamos decidir antes disso.\n\nObrigada!\nRH — Grupo ILED',
+  lembrete:'Olá, {gestor}! Passando para lembrar da *avaliação de experiência de {fase} dias* de *{colaborador}*. 🙏\n\nO período vence em *{vence}* — sem a sua resposta não conseguimos decidir a continuidade do contrato a tempo.\n\nLink: {link}\n\nObrigada!\nRH — Grupo ILED',
+  geral:'Olá! 😊 Segue o link da *avaliação de experiência de {fase} dias* da ILED.\n\nResponda uma vez para cada pessoa da sua equipe que está completando {fase} dias:\n{link}\n\nSua resposta é muito importante para decidirmos a continuidade do contrato dentro do prazo. Obrigada!',
+  fb_intro:'Olá, {colaborador}! 😊\n\nConcluímos a sua avaliação de experiência de {fase} dias. Queremos compartilhar com você o retorno de {gestor}, para que você saiba o que está indo bem e no que pode crescer.',
+  fb_fim:'Conte com a gente para o que precisar. Bom trabalho!\nEquipe de RH — Grupo ILED',
+  res_seguir:'➡️ *Resultado:* você segue para o 2º período da experiência.',
+  res_plano:'➡️ *Resultado:* você segue para o 2º período da experiência, com um plano de acompanhamento junto ao seu gestor.',
+  res_efetivar:'🎉 *Resultado:* parabéns, você foi efetivado(a) na ILED!'
+};
+const MSG_EXP_ROT = [
+  ['Para o gestor (quem avalia)', [['envio','Envio da avaliação','um por colaborador'],['lembrete','Lembrete','para quem ainda não respondeu'],['geral','Mensagem geral','sem colaborador específico']]],
+  ['Para o colaborador (feedback)', [['fb_intro','Abertura do feedback',''],['fb_fim','Encerramento do feedback',''],['res_seguir','Resultado — seguir para o 2º período',''],['res_plano','Resultado — seguir com plano de acompanhamento',''],['res_efetivar','Resultado — efetivado','']]]
+];
+const MSG_PH = [['{colaborador}','nome do colaborador'],['{gestor}','nome do gestor'],['{funcao}','função'],['{fase}','45 ou 90'],['{link}','link do Forms'],['{prazo}','prazo de resposta'],['{vence}','vencimento']];
+const msgExp = k => { const o = lerJSON(S.base.exp_msgs, {}); return (o[k] !== undefined && o[k] !== '') ? o[k] : MSG_EXP_PADRAO[k]; };
+function preencherMsg(t, v){
+  let r = String(t || '').replace(/\{(colaborador|gestor|funcao|fase|link|prazo|vence)\}/g, (m, k) => v[k] !== undefined && v[k] !== null ? String(v[k]) : '');
+  return r.replace(/ \(\)/g, '').replace(/, !/g, '!').replace(/ ,/g, ',').replace(/de , /g, 'de ').replace(/[ \t]+\n/g, '\n');
+}
+function modalMensagensExp(){
+  const o = { ...MSG_EXP_PADRAO, ...lerJSON(S.base.exp_msgs, {}) };
+  modal(`<div class="modal-head"><div class="mi">${ic('chat')}</div><div><h3>Modelos de mensagem</h3><p>Avaliação de experiência — edite como quiser. As palavras entre { } são trocadas sozinhas.</p></div><button class="x"></button></div>
+    <div class="modal-body"><div class="mg-ph">${MSG_PH.map(([p, d]) => `<button data-mgph="${p}" title="${esc(d)}">${p}</button>`).join('')}<span class="small-m" style="align-self:center">← clique para inserir no texto em que você está</span></div>
+      <div class="mg-l">${MSG_EXP_ROT.map(([g, its]) => `<div class="mg-grp">${esc(g)}</div>` + its.map(([k, l, sub]) => `<div class="mg-i"><label>${esc(l)}${sub ? `<small>${esc(sub)}</small>` : ''}<button class="lnk" data-mgr="${k}">restaurar padrão</button></label><textarea data-mg="${k}" rows="${k.startsWith('res_') || k === 'fb_fim' ? 3 : 7}">${esc(o[k])}</textarea></div>`).join('')).join('')}</div>
+      <div class="err" id="mgErr"></div></div>
+    <div class="modal-foot"><button class="btn btn-red" id="mgOk">${ic('save')}Salvar mensagens</button><button class="btn btn-ghost" id="mgAll" style="margin-left:auto">Restaurar todas</button></div>`, 'lg');
+  let ult = null; document.querySelectorAll('[data-mg]').forEach(t => t.onfocus = () => ult = t);
+  document.querySelectorAll('[data-mgph]').forEach(b => b.onclick = () => { const t = ult || document.querySelector('[data-mg]'); const p = t.selectionStart ?? t.value.length; t.value = t.value.slice(0, p) + b.dataset.mgph + t.value.slice(t.selectionEnd ?? p); t.focus(); t.selectionStart = t.selectionEnd = p + b.dataset.mgph.length; });
+  document.querySelectorAll('[data-mgr]').forEach(b => b.onclick = () => { document.querySelector(`[data-mg="${b.dataset.mgr}"]`).value = MSG_EXP_PADRAO[b.dataset.mgr]; });
+  $('#mgAll').onclick = () => { if (!confirm('Voltar todas as mensagens para o padrão?')) return; document.querySelectorAll('[data-mg]').forEach(t => t.value = MSG_EXP_PADRAO[t.dataset.mg]); };
+  $('#mgOk').onclick = async () => { const n = {}; document.querySelectorAll('[data-mg]').forEach(t => { if (t.value.trim() !== MSG_EXP_PADRAO[t.dataset.mg].trim()) n[t.dataset.mg] = t.value; });
+    try { await DB.saveBase({ exp_msgs: JSON.stringify(n) }); S.base.exp_msgs = JSON.stringify(n); fecharModal(); toast('Mensagens salvas'); if ($('#cSteps')) desenharCiclo(); } catch(e){ $('#mgErr').textContent = 'Erro: ' + (e.message || e); } };
+}
+
+// ---- link personalizado (pré-preenchido) por colaborador
+function lerPreenchido(url){
+  try { const u = new URL(url.trim()); if (!/docs\.google\.com\/forms/.test(u.host + u.pathname)) return null;
+    const m = {}; let outro = null;
+    u.searchParams.forEach((v, k) => { if (!/^entry\.\d+$/.test(k)) return; const n = normTxt(v);
+      if (n === 'NOME') m.nome = k; else if (n === 'CPF') m.cpf = k; else if (n === 'GESTOR') m.gestor = k; else if (!outro) outro = k; });
+    if (outro) m.funcao = outro;
+    if (!m.nome) return null;
+    return { base: u.origin + u.pathname, ...m };
+  } catch(e){ return null; }
+}
+const PP_PADRAO = { '45': { base:'https://docs.google.com/forms/d/e/1FAIpQLSft9XrCFJYbtf2rI8t9mifEJZEuqxj5do6Rjjq2MC5xyt6Lag/viewform', nome:'entry.922799179', cpf:'entry.433671179', funcao:'entry.1957634839', gestor:'entry.1734408063', exemplo:'https://docs.google.com/forms/d/e/1FAIpQLSft9XrCFJYbtf2rI8t9mifEJZEuqxj5do6Rjjq2MC5xyt6Lag/viewform?usp=pp_url&entry.922799179=NOME&entry.433671179=CPF&entry.1957634839=ANALISTA+COMERCIAL&entry.1734408063=GESTOR' } };
+const ppDe = f => fxLinks()['pp' + f] || PP_PADRAO[f] || null;
+function linkPessoa(f, x){
+  const L = fxLinks(), pp = ppDe(f), u = (L[f] || '').trim();
+  if (!pp || !pp.base) return u;
+  const q = new URLSearchParams({ usp:'pp_url' }), pe = quadro().pessoas.find(p => nomesParecidos(p.nome, x.nome)) || {};
+  q.set(pp.nome, tituloNome(x.nome));
+  if (pp.gestor && x.gestor) q.set(pp.gestor, tituloNome(x.gestor));
+  if (pp.cpf && (pe.cpf || x.cpf)) q.set(pp.cpf, pe.cpf || x.cpf);
+  if (pp.funcao && (x.funcao || pe.funcao)) q.set(pp.funcao, String(x.funcao || pe.funcao).toUpperCase());
+  return pp.base + '?' + q.toString();
+}
+// tela "Links do Google Forms": + link pré-preenchido
+modalLinksForms = function(){
+  const L = fxLinks();
+  modal(`<div class="modal-head"><div class="mi">${ic('doc')}</div><div><h3>Links do Google Forms</h3><p>Avaliação de experiência — o link que vai para os gestores.</p></div><button class="x"></button></div>
+    <div class="modal-body">${FX_FASES.map(([f, n]) => `<div class="mat-sec" style="margin-top:4px"><b>${n}</b></div>
+      <div class="field"><label>Link do Forms</label><input id="fxU${f}" value="${esc(L[f] || '')}" placeholder="https://docs.google.com/forms/d/e/.../viewform"></div>
+      <div class="field"><label>Link pré-preenchido <small class="lbl-s">(recomendado — o nome do colaborador já vai preenchido para o gestor)</small></label><input id="fxP${f}" value="${esc((ppDe(f) || {}).exemplo || '')}" placeholder="cole aqui o link pré-preenchido com NOME, CPF e GESTOR">
+        <small class="small-m">${ppDe(f) ? '<span class="pp-ok">✓ Ativo</span>' : '<span class="pp-no">○ Ainda não configurado</span>'}</small></div>`).join('')}
+      <details class="fm-det"><summary>Como pegar o link pré-preenchido (1 minuto por Forms)</summary><ol class="gd-r">
+        <li>Abra o Forms no modo de edição → clique nos <b>⋮ três pontinhos</b> → <b>Obter link pré-preenchido</b>.</li>
+        <li>No campo <b>Nome do colaborador avaliado</b> escreva <b>NOME</b>. No <b>CPF</b> escreva <b>CPF</b>. No <b>Seu nome</b> (gestor) escreva <b>GESTOR</b>. Na <b>Função</b>, marque qualquer uma.</li>
+        <li>Clique em <b>Obter link</b> → <b>Copiar link</b> e cole aqui.</li></ol>
+        <p class="small-m">Pronto: no envio, a Central troca NOME, GESTOR, CPF e FUNÇÃO pelos dados de cada colaborador. O gestor só dá as notas — e a resposta volta com o nome certinho.</p></details>
+      <div class="err" id="fxErr"></div></div>
+    <div class="modal-foot"><button class="btn btn-red" id="fxOk">${ic('save')}Salvar links</button></div>`, 'lg');
+  $('#fxOk').onclick = async () => { const o = { ...L };
+    for (const [f] of FX_FASES){ const v = $('#fxU' + f).value.trim(), pv = $('#fxP' + f).value.trim();
+      if (v && !/^https:\/\//.test(v)){ $('#fxErr').textContent = 'O link precisa começar com https://'; return; } o[f] = v;
+      if (pv){ const pp = lerPreenchido(pv); if (!pp){ $('#fxErr').textContent = `No link pré-preenchido de ${f} dias não achei o campo NOME. Escreva NOME no nome do colaborador antes de copiar o link.`; return; } o['pp' + f] = { ...pp, exemplo:pv }; }
+      else delete o['pp' + f]; }
+    try { await DB.saveBase({ exp_forms: JSON.stringify(o) }); S.base.exp_forms = JSON.stringify(o); fecharModal(); render(); toast('Links salvos'); } catch(e){ $('#fxErr').textContent = 'Erro: ' + (e.message || e); } };
+};
+
+// ---- atualizar respostas sem sair da página
+let UPD_EM = null;
+async function atualizarRespostas(silencioso){
+  if (!CD) return; const f = faseCD(), antes = { n: fxPendentes(f).length, r: avalsDo(CD.id).filter(a => a.gestor_em).length };
+  const b = $('[data-upd]'); if (b && !silencioso){ b.disabled = true; b.innerHTML = ic('refresh') + 'Atualizando…'; }
+  try {
+    if (!silencioso || ($('#cStatus') && $('#cStatus').classList.contains('pend'))) await salvarCiclo();
+    S.avals = await DB.all('rh_avaliacoes'); try { S.fentrada = await DB.all('rh_forms_entrada'); } catch(e){}
+    UPD_EM = new Date(); const depois = { n: fxPendentes(f).length, r: avalsDo(CD.id).filter(a => a.gestor_em).length };
+    const y = window.scrollY; desenharCiclo(); window.scrollTo(0, y);
+    const novas = Math.max(0, depois.n - antes.n) + Math.max(0, depois.r - antes.r);
+    if (novas) toast('📥 ' + novas + ' resposta(s) nova(s)!'); else if (!silencioso) toast('✓ Atualizado — nenhuma resposta nova');
+  } catch(e){ if (!silencioso) toast('Erro ao atualizar'); }
+}
+setInterval(() => { try {
+  if (document.hidden || !CD || !S.view || S.view.name !== 'ciclo' || tipoCiclo(CD) !== 'experiencia' || !$('#cSteps')) return;
+  if ($('#modalRoot .overlay')) return; const ae = document.activeElement; if (ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName)) return;
+  atualizarRespostas(true); } catch(e){} }, 60000);
+const btnAtualizar = () => `<button class="btn btn-ghost sm" data-upd>${ic('refresh')}Atualizar respostas</button><span class="upd-at">${UPD_EM ? 'atualizado às ' + UPD_EM.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) + ' · ' : ''}atualiza sozinho a cada 1 min</span>`;
+
+/* =========================================================
    CONTROLE DE ENVIO — quem recebeu o link, quem respondeu
    ========================================================= */
 const enLista = () => { CD.config.envios = CD.config.envios || []; return CD.config.envios; };
@@ -7031,8 +7150,9 @@ function enStatus(x, f){
   if (x.enviado_em) return { k:'agu', t:'Aguardando' };
   return { k:'nao', t:'Não enviada' };
 }
-const enMsg = (f, u, x) => `Olá${x.gestor ? ', ' + primeiroNome(tituloNome(x.gestor)) : ''}! 😊\n\nPreciso da sua *avaliação de experiência de ${f} dias* de *${tituloNome(x.nome)}*${x.funcao ? ' (' + tituloNome(x.funcao) + ')' : ''}.\n\nÉ rapidinho, responda por este link:\n${u}\n\n${CD.prazo ? 'Por favor, responda até *' + dataCurta(CD.prazo) + '*.' : 'Por favor, responda assim que puder.'}${x.venc ? ' O período vence em ' + dataCurta(x.venc) + ' e precisamos decidir antes disso.' : ''}\n\nObrigada!\nRH — Grupo ILED`;
-const enLembrete = (f, u, x) => `Olá${x.gestor ? ', ' + primeiroNome(tituloNome(x.gestor)) : ''}! Passando para lembrar da *avaliação de experiência de ${f} dias* de *${tituloNome(x.nome)}*. 🙏\n\n${x.venc ? 'O período vence em *' + dataCurta(x.venc) + '* — ' : ''}sem a sua resposta não conseguimos decidir a continuidade do contrato a tempo.\n\nLink: ${u}\n\nObrigada!\nRH — Grupo ILED`;
+const varsPessoa = (f, x) => ({ colaborador:tituloNome(x.nome), gestor: x.gestor ? primeiroNome(tituloNome(x.gestor)) : '', funcao: x.funcao ? tituloNome(x.funcao) : '', fase:f, link:linkPessoa(f, x), prazo: CD && CD.prazo ? dataCurta(CD.prazo) : 'o quanto antes', vence: x.venc ? dataCurta(x.venc) : 'em breve' });
+const enMsg = (f, u, x) => preencherMsg(msgExp('envio'), varsPessoa(f, x));
+const enLembrete = (f, u, x) => preencherMsg(msgExp('lembrete'), varsPessoa(f, x));
 function modalAddEnvio(f, el){
   modal(`<div class="modal-head"><div class="mi">${ic('users')}</div><div><h3>Adicionar pessoa</h3><p>Quem está completando ${f} dias e vai ser avaliado.</p></div><button class="x"></button></div>
     <div class="modal-body"><div class="field"><label>Nome do colaborador *</label><input id="enN" list="enDl"><datalist id="enDl">${quadro().pessoas.map(p => `<option value="${esc(p.nome)}">`).join('')}</datalist></div>
@@ -7053,7 +7173,9 @@ function tabelaEnvio(f, u, el){
   const urg = st.filter(y => y.s.k !== 'ok' && dd(y.x) !== null && dd(y.x) <= 5).length;
   const ord = st.sort((a, b) => (a.s.k === 'ok') - (b.s.k === 'ok') || (dd(a.x) ?? 999) - (dd(b.x) ?? 999));
   const ICO = { ok:['g','Recebida'], chegou:['a','Chegou'], agu:['a','Aguardando'], nao:['n','Não enviada'] };
-  return `<div class="mat-sec" style="margin-top:4px"><b>Controle de envio</b><span>Uma linha por colaborador avaliado. O envio fica registrado quando você clica em Enviar; a resposta é marcada sozinha quando o Forms chega.</span></div>
+  const pp = ppDe(f);
+  return `<div class="en-top"><div class="mat-sec"><b>Controle de envio</b><span>Uma linha por colaborador avaliado. O envio fica registrado quando você clica em Enviar; a resposta é marcada sozinha quando o Forms chega.</span></div>${btnAtualizar()}<button class="btn btn-ghost sm" data-mged>${ic('chat')}Editar mensagens</button></div>
+    <p class="small-m" style="margin:-4px 0 12px">${pp ? '<span class="pp-ok">✓ Link personalizado ativo</span> — cada gestor recebe o Forms com o nome do colaborador já preenchido.' : `<span class="pp-no">○ Link igual para todos</span> — o gestor precisa digitar o nome. ${isMaster() ? '<button class="lnk" data-fxed>Ativar o link personalizado</button>' : ''}`}</p>
     <div class="en-plac"><div><b>${env}</b><small>📤 enviada(s) de ${L.length}</small></div><div class="ok"><b>${resp}</b><small>✅ respondida(s)</small></div><div class="${agu ? 'warn' : ''}"><b>${agu}</b><small>⏳ aguardando resposta</small></div><div class="${urg ? 'hot' : ''}"><b>${urg}</b><small>⚠️ vencendo em até 5 dias sem resposta</small></div></div>
     ${L.length ? `<div class="tri-wrap"><table class="tri en-t"><thead><tr><th>Colaborador</th><th>Gestor (avalia)</th><th>Vence em</th><th>Enviado</th><th>Resposta</th><th></th></tr></thead><tbody>
       ${ord.map(({ x, s: y }) => { const d = dd(x), lem = x.lembretes || [];
@@ -7062,8 +7184,8 @@ function tabelaEnvio(f, u, el){
           <td>${x.venc ? `<span class="chip ${d < 0 ? '' : d <= 5 ? '' : d <= 10 ? 'a' : 'n'}">${dataCurta(x.venc)} · ${d < 0 ? 'vencido' : d === 0 ? 'hoje' : d + ' dia(s)'}</span>` : '<span class="muted">—</span>'}</td>
           <td>${x.enviado_em ? `<span class="en-st">✅ ${fmtDH(x.enviado_em)}</span>${lem.length ? `<small>🔔 ${lem.length} lembrete(s) · último ${fmtDH(lem[lem.length - 1])}</small>` : ''}` : '<span class="muted">—</span>'}</td>
           <td><span class="en-st"><span class="pd bg-${ICO[y.k][0]}"></span>${esc(y.t)}</span>${y.d ? `<small>em ${fmtDH(y.d)}</small>` : ''}</td>
-          <td><div class="en-acts">${y.k === 'ok' ? '' : !u ? '' : x.enviado_em ? (y.k === 'chegou' ? '' : `<button class="btn btn-ghost sm" data-enl="${x.id}">🔔 Lembrar</button>`) : `<button class="btn btn-red sm" data-ene="${x.id}">${ic('chat')}Enviar</button>`}
-            ${x.enviado_em || y.k === 'ok' ? '' : `<button class="icon-btn" data-enm="${x.id}" title="Marcar como enviada (mandei por fora)">${ic('check')}</button>`}<button class="icon-btn" data-enx="${x.id}" title="Tirar da lista">${ic('trash')}</button></div></td></tr>`; }).join('')}</tbody></table></div>`
+          <td><div class="en-acts">${y.k === 'ok' || (y.k === 'chegou' && !x.enviado_em) ? '' : !u ? '' : x.enviado_em ? (y.k === 'chegou' ? '' : `<button class="btn btn-ghost sm" data-enl="${x.id}">🔔 Lembrar</button>`) : `<button class="btn btn-red sm" data-ene="${x.id}">${ic('chat')}Enviar</button>`}
+            ${u && y.k !== 'ok' ? `<button class="icon-btn" data-encp="${x.id}" title="Copiar o link desta pessoa">${ic('copy')}</button>` : ''}${x.enviado_em || y.k === 'ok' ? '' : `<button class="icon-btn" data-enm="${x.id}" title="Marcar como enviada (mandei por fora)">${ic('check')}</button>`}<button class="icon-btn" data-enx="${x.id}" title="Tirar da lista">${ic('trash')}</button></div></td></tr>`; }).join('')}</tbody></table></div>`
       : `<div class="empty" style="padding:12px">Ninguém na lista. O Quadro de pessoas não mostrou ninguém completando ${f} dias — adicione à mão.</div>`}
     <div class="cline-r" style="margin-top:10px"><button class="btn btn-ghost sm" data-enadd>${ic('plus')}Adicionar pessoa</button></div>`;
 }
@@ -7076,6 +7198,9 @@ function ligarEnvio(el, f, u){
     CD.config.envios = enLista().filter(y => y.id !== x.id); (CD.config.envRem = CD.config.envRem || []).push(x.nome); cicloPendente(); re(); });
   el.querySelectorAll('[data-eng]').forEach(i => i.onchange = () => { X(i.dataset.eng).gestor = i.value.trim(); cicloPendente(); });
   const add = el.querySelector('[data-enadd]'); if (add) add.onclick = () => modalAddEnvio(f, el);
+  el.querySelectorAll('[data-encp]').forEach(b => b.onclick = () => copiarTxt(linkPessoa(f, X(b.dataset.encp)), 'Link de ' + tituloNome(X(b.dataset.encp).nome) + ' copiado'));
+  el.querySelectorAll('[data-mged]').forEach(b => b.onclick = modalMensagensExp);
+  el.querySelectorAll('[data-upd]').forEach(b => b.onclick = () => atualizarRespostas());
 }
 
 // 5. Feedback ao colaborador — com filtro do que entra
@@ -7085,14 +7210,15 @@ function textoFeedbackExp(a, fil){
   const r = a.resp_gestor || {}, n = r.n || {}, its = itensForm(a.form), fase = (a.form || {}).fase || (a.rh || {}).fase || 45, nome = primeiroNome(tituloNome(a.nome));
   const dest = its.filter(x => +n[x.id] >= 4), dev = its.filter(x => n[x.id] && +n[x.id] <= 2);
   const dec = (a.rh || {}).decisao || r.dec || '';
-  const L = [`Olá, ${nome}! 😊`, '', `Concluímos a sua avaliação de experiência de ${fase} dias. Queremos compartilhar com você o retorno do seu gestor${a.gestor ? ', ' + tituloNome(a.gestor) : ''}, para que você saiba o que está indo bem e no que pode crescer.`];
+  const V = { colaborador:nome, gestor: a.gestor ? tituloNome(a.gestor) : 'seu gestor', funcao: a.funcao ? tituloNome(a.funcao) : '', fase };
+  const L = [preencherMsg(msgExp('fb_intro'), V)];
   if (fil.fortes && r.fortes) L.push('', '✅ *Seus pontos fortes*', r.fortes);
   if (fil.dest && dest.length) L.push('', '🌟 *Onde você se destacou*', ...dest.map(x => '• ' + x.n));
   if (fil.aten && r.desenv) L.push('', '📌 *Pontos de atenção*', r.desenv);
   if (fil.desenv && dev.length) L.push('', '🎯 *O que desenvolver*', ...dev.map(x => '• ' + x.n + (x.d ? ' — ' + x.d : '')));
   if (fil.notas) L.push('', '📊 *Sua avaliação (de 1 a 5)*', ...its.filter(x => n[x.id]).map(x => `• ${x.n}: ${n[x.id]}`));
-  if (fil.dec && decPositiva(dec)) L.push('', /EFETIVAR/.test(normTxt(dec)) ? '🎉 *Resultado:* parabéns, você foi efetivado(a) na ILED!' : /ACOMPANHAMENTO/.test(normTxt(dec)) ? '➡️ *Resultado:* você segue para o 2º período da experiência, com um plano de acompanhamento junto ao seu gestor.' : '➡️ *Resultado:* você segue para o 2º período da experiência.');
-  L.push('', 'Conte com a gente para o que precisar. Bom trabalho!', 'Equipe de RH — Grupo ILED');
+  if (fil.dec && decPositiva(dec)) L.push('', preencherMsg(msgExp(/EFETIVAR/.test(normTxt(dec)) ? 'res_efetivar' : /ACOMPANHAMENTO/.test(normTxt(dec)) ? 'res_plano' : 'res_seguir'), V));
+  L.push('', preencherMsg(msgExp('fb_fim'), V));
   return L.join('\n');
 }
 const _mFeedbackExp = MATC.feedback;
@@ -7100,13 +7226,14 @@ MATC.feedback = function(el){
   if (tipoCiclo(CD) !== 'experiencia') return _mFeedbackExp.call(MATC, el);
   const av = avalsDo(CD.id).filter(a => a.gestor_em), A = id => S.avals.find(a => a.id === id), ab = S.fbAberto;
   if (!av.length){ el.innerHTML = vazioCands('O feedback aparece aqui quando o gestor responder a avaliação.'); return; }
-  el.innerHTML = `<p class="small-m" style="margin-bottom:10px">${av.filter(a => (a.rh || {}).fbFeito).length} de ${av.length} feedback(s) entregue(s).</p>` + av.map(a => { const r = a.rh || {}, fil = { ...Object.fromEntries(FB_FILTROS.map(x => [x[0], x[2]])), ...(r.fbFil || {}) }, neg = !decPositiva(r.decisao || (a.resp_gestor || {}).dec);
+  el.innerHTML = `<div class="en-top"><p class="small-m" style="margin:0;flex:1">${av.filter(a => (a.rh || {}).fbFeito).length} de ${av.length} feedback(s) entregue(s).</p><button class="btn btn-ghost sm" data-mged>${ic('chat')}Editar mensagens</button></div>` + av.map(a => { const r = a.rh || {}, fil = { ...Object.fromEntries(FB_FILTROS.map(x => [x[0], x[2]])), ...(r.fbFil || {}) }, neg = !decPositiva(r.decisao || (a.resp_gestor || {}).dec);
     return `<div class="xp-fb"><div class="xp-fb-h" data-xft="${a.id}"><span class="pd bg-${corParecer(a)}"></span><div><b>${esc(tituloNome(a.nome))}</b><small>${esc(a.funcao || '')} · nota ${fmtN(mGest(a))} · ${esc(r.decisao || (a.resp_gestor || {}).dec || 'sem decisão')}</small></div><span class="chip ${r.fbFeito ? 'g' : 'a'}">${r.fbFeito ? 'Entregue em ' + dataCurta(r.fbFeito) : 'Feedback pendente'}</span></div>
       ${ab === a.id ? `<div class="xp-fb-b"><div class="xp-fil"><b>O que entra no feedback</b>${FB_FILTROS.map(([k, l]) => { const dis = k === 'dec' && neg; return `<label class="${dis ? 'dis' : ''}" title="${dis ? 'Resultado negativo: comunique pessoalmente, junto com o DP' : ''}"><input type="checkbox" data-xff="${a.id}|${k}" ${fil[k] && !dis ? 'checked' : ''} ${dis ? 'disabled' : ''}> ${l}</label>`; }).join('')}
           ${neg ? '<p class="small-m" style="margin-top:8px">⚠️ “Não prorrogar / Não efetivar” não vai no texto: comunique pessoalmente, com o DP.</p>' : ''}
           <div class="field" style="margin-top:12px"><label>Entregue em</label><input type="date" data-xfd="${a.id}" value="${esc(r.fbFeito || '')}"></div></div>
         <div><textarea data-xftx="${a.id}">${esc(r.fbTxt !== undefined ? r.fbTxt : textoFeedbackExp(a, fil))}</textarea>
           <div class="cline-r" style="margin-top:8px"><button class="btn btn-ghost sm" data-xfc="${a.id}">${ic('copy')}Copiar</button><button class="btn btn-red sm" data-xfz="${a.id}">${ic('chat')}Enviar no WhatsApp</button><button class="btn btn-ghost sm" data-xfp="${a.id}">${ic('print')}Imprimir</button><button class="lnk" data-xfr="${a.id}" style="margin-left:auto">montar de novo</button></div></div></div>` : ''}</div>`; }).join('');
+  el.querySelectorAll('[data-mged]').forEach(b => b.onclick = modalMensagensExp);
   const re = () => MATC.feedback(el), txt = a => { const r = a.rh || {}, fil = { ...Object.fromEntries(FB_FILTROS.map(x => [x[0], x[2]])), ...(r.fbFil || {}) }; return r.fbTxt !== undefined ? r.fbTxt : textoFeedbackExp(a, fil); };
   el.querySelectorAll('[data-xft]').forEach(h => h.onclick = () => { S.fbAberto = S.fbAberto === h.dataset.xft ? null : h.dataset.xft; re(); });
   el.querySelectorAll('[data-xff]').forEach(c => c.onchange = () => { const [id, k] = c.dataset.xff.split('|'), a = A(id); a.rh = a.rh || {}; a.rh.fbFil = { ...(a.rh.fbFil || {}), [k]: c.checked }; delete a.rh.fbTxt; avPend(id); re(); });
