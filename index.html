@@ -760,6 +760,12 @@ select.pede{border-color:var(--amber)!important;background:#FFFBF2}
 .pp-no{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#B7791F}
 .en-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}.en-top .mat-sec{margin:0;flex:1}
 .upd-at{font-size:11.5px;color:var(--muted)}
+/* ---------- COLABORADORES AVALIADOS ---------- */
+.pv-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)}
+.pv-bar input{margin-left:auto;height:34px;border:1.5px solid var(--line2);border-radius:10px;padding:0 12px;font:13px inherit;font-family:inherit;min-width:220px}
+.pv-dec{display:inline-flex;align-items:center;font-weight:700;font-size:13px;color:var(--ink)}
+.pv-dec.n{color:var(--muted);font-weight:600}
+.pv-nm{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
 /* ---------- GESTÃO DE DESEMPENHO (layout profissional) ---------- */
 .dsp-h{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .dsp-h h1{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.4px;line-height:1.15}
@@ -864,7 +870,7 @@ a.btn{text-decoration:none}
     <div style="height:18px"></div>
     <div class="user-card">
       <div class="avatar" id="uAv"></div>
-      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 22/10 · 14h</div></div>
+      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 22/10 · 14h30</div></div>
       <button id="btnSair" title="Sair"></button>
     </div>
   </aside>
@@ -6934,7 +6940,7 @@ function tabelaDsp(t){
   return `<table class="dsp-t"><thead><tr><th>Avaliação</th><th class="c">Avaliados</th><th>Respostas</th><th>${exp ? 'Decisões' : 'Etapa atual'}</th><th>Prazo</th><th>Status</th><th></th></tr></thead><tbody>
     ${cs.map(c => { const av = avalsDo(c.id), f = av.filter(a => feitoAval(a, md)).length, et = etapasDe(c), at = et.find(e => !((c.etapas || {})[e.k] || {}).ok), fim = c.status === 'encerrado';
       const dec = av.filter(a => (a.rh || {}).decisao).length, pz = c.prazo ? diasAte(c.prazo) : null;
-      return `<tr class="${fim ? 'fim' : ''}" data-dspc="${c.id}"><td><b>${esc(c.nome)}</b>${exp && (c.config || {}).fase ? ` <span class="chip n">${c.config.fase} dias</span>` : ''}<small>${c.ini ? 'Período ' + dataCurta(c.ini) + (c.fim ? ' a ' + dataCurta(c.fim) : '') : ''}</small></td>
+      return `<tr class="${fim ? 'fim' : ''}" data-dspc="${c.id}"><td><b>${esc(c.nome)}</b>${exp && (c.config || {}).fase ? ` <span class="chip n">${c.config.fase} dias</span>` : ''}${exp && av.length ? `<div class="pv-nm">👤 ${av.slice(0, 3).map(a => esc(tituloNome(a.nome))).join(', ')}${av.length > 3 ? ' +' + (av.length - 3) : ''}</div>` : `<small>${c.ini ? 'Período ' + dataCurta(c.ini) + (c.fim ? ' a ' + dataCurta(c.fim) : '') : ''}</small>`}</td>
         <td class="c"><b>${av.length}</b></td>
         <td>${av.length ? `<b>${f}</b> de ${av.length}<div class="dsp-bar"><i style="width:${Math.round(f / av.length * 100)}%"></i></div>` : '<span class="muted">—</span>'}</td>
         <td>${exp ? (av.length ? `<b>${dec}</b> de ${av.length}` : '—') : fim ? 'Encerrada' : at ? `Etapa ${et.indexOf(at) + 1} · ${esc(at.n)}` : 'Pronta para encerrar'}</td>
@@ -7271,6 +7277,40 @@ desenharCiclo = function(){
   box.querySelectorAll('[data-cok]').forEach(b => b.onclick = () => { const k = b.dataset.cok; CD.etapas[k] = { ok:true, data:hojeISO() }; const n = ET.find(x => !(CD.etapas[x.k] || {}).ok); CAberta = n ? n.k : k; desenharCiclo(); salvarCiclo(); });
   box.querySelectorAll('[data-creabre]').forEach(b => b.onclick = () => { CD.etapas[b.dataset.creabre] = { ok:false }; desenharCiclo(); salvarCiclo(); });
   box.querySelectorAll('[data-cmat]').forEach(el => { const k = el.dataset.cmat, L = tipoCiclo(CD) === 'lideranca' && MATC[k + 'L'], f = L || MATC[k]; if (f) f(el); });
+};
+
+/* =========================================================
+   COLABORADORES AVALIADOS — quem foi avaliado e a conclusão
+   ========================================================= */
+const corDecisao = d => { const n = normTxt(d || ''); if (!n) return 'n'; if (/ACOMPANHAMENTO/.test(n)) return 'a'; if (/^NAO/.test(n)) return 'r'; return 'g'; };
+const PV_F = [['', 'Todos'], ['g', 'Seguir / Efetivado'], ['a', 'Plano de acompanhamento'], ['r', 'Não prorrogado / Não efetivado'], ['n', 'Sem decisão']];
+function painelAvaliadosExp(){
+  const cs = (S.ciclos || []).filter(c => tipoCiclo(c) === 'experiencia'), cid = new Map(cs.map(c => [c.id, c]));
+  const todos = S.avals.filter(a => cid.has(a.ciclo_id)).sort((a, b) => (b.gestor_em || b.created_at || '').localeCompare(a.gestor_em || a.created_at || ''));
+  if (!todos.length) return '';
+  const F = S.dspPF || '', l = todos.filter(a => !F || corDecisao((a.rh || {}).decisao) === F), conta = k => todos.filter(a => corDecisao((a.rh || {}).decisao) === k).length;
+  return `<div class="dsp-card"><div class="dsp-card-h"><b>Colaboradores avaliados</b><span class="small-m">${todos.length} no total · clique para abrir</span></div>
+    <div class="pv-bar">${PV_F.map(([k, t]) => `<button class="xf-c ${F === k ? 'on' : ''}" data-dpf="${k}">${k ? `<span class="pd bg-${k}"></span>` : ''}${t}<b>${k ? conta(k) : todos.length}</b></button>`).join('')}<input id="dspQ" placeholder="🔎 Buscar colaborador ou gestor"></div>
+    ${l.length ? `<table class="dsp-t"><thead><tr><th>Colaborador</th><th>Período</th><th>Avaliado por</th><th class="c">Nota</th><th>Parecer do gestor</th><th>Conclusão (decisão final)</th><th>Feedback</th><th></th></tr></thead><tbody>
+    ${l.map(a => { const r = a.rh || {}, c = cid.get(a.ciclo_id), fase = (a.form || {}).fase || r.fase || (c.config || {}).fase || '', m = mGest(a), dec = r.decisao || '';
+      return `<tr data-pva="${a.id}" data-pvc="${c.id}" data-txt="${esc(normTxt(a.nome + ' ' + (a.gestor || '') + ' ' + (a.funcao || '')))}"><td><b>${esc(tituloNome(a.nome))}</b><small>${esc(tituloNome(a.funcao || ''))}</small></td>
+        <td>${fase ? fase + ' dias' : '—'}<small>${esc(c.nome.replace(/^Experiências? (\d+ dias )?· /, ''))}</small></td>
+        <td>${esc(tituloNome(a.gestor || '') || '—')}${a.gestor_em ? `<small>respondeu ${dataCurta(String(a.gestor_em).slice(0, 10))}</small>` : '<small>aguardando</small>'}</td>
+        <td class="c"><b class="tx-${m === null ? 'n' : m >= 4 ? 'g' : m >= 3 ? 'a' : 'r'}">${fmtN(m)}</b></td>
+        <td><span class="pd bg-${corParecer(a)}"></span>${esc((a.resp_gestor || {}).dec || '—')}</td>
+        <td><span class="pv-dec ${dec ? '' : 'n'}"><span class="pd bg-${corDecisao(dec)}"></span>${esc(dec || 'Pendente')}</span></td>
+        <td>${r.fbFeito ? `✅ ${dataCurta(r.fbFeito)}` : '<span class="muted">—</span>'}</td><td class="seta">›</td></tr>`; }).join('')}</tbody></table>`
+      : '<div class="dsp-vazio">Ninguém com esse filtro.</div>'}</div>`;
+}
+const _telaDspPV = telaDesempenho;
+telaDesempenho = function(){ const h = _telaDspPV.apply(this, arguments);
+  if ((S.dspTab || 'experiencia') !== 'experiencia') return h;
+  return h.replace('<details class="dsp-cfg"', painelAvaliadosExp() + '<details class="dsp-cfg"'); };
+const _ligarDspPV = ligarDsp;
+ligarDsp = function(){ _ligarDspPV.apply(this, arguments);
+  document.querySelectorAll('[data-dpf]').forEach(b => b.onclick = () => { S.dspPF = b.dataset.dpf; render(); });
+  document.querySelectorAll('[data-pva]').forEach(r => r.onclick = () => { CAberta = 'dec'; ir('ciclo', r.dataset.pvc); });
+  const q = $('#dspQ'); if (q) q.oninput = () => { const t = normTxt(q.value); document.querySelectorAll('[data-pva]').forEach(r => r.style.display = !t || r.dataset.txt.includes(t) ? '' : 'none'); };
 };
 
 const _carregarAc = carregarDados;
