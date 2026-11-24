@@ -1,0 +1,20 @@
+name: Manter Supabase acordado
+
+# Todo dia, às 7h (horário de Brasília), chama a função rh_ping da Central RH.
+# Isso conta como uso do banco e impede o Supabase gratuito de pausar o projeto.
+on:
+  schedule:
+    - cron: "0 10 * * *"   # 10h UTC = 7h em Brasília
+  workflow_dispatch:        # permite rodar na mão pelo botão "Run workflow"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar a Central RH
+        run: |
+          curl --fail --silent --show-error \
+            "https://pgvwnpzdauxuxiwrcist.supabase.co/rest/v1/rpc/rh_ping" \
+            -H "apikey: sb_publishable_xnBj6OooIMvUDvPqITxZ8g_B0u9q__3"
+          echo ""
+          echo "✅ Supabase acordado"
