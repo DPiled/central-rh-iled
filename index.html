@@ -1159,7 +1159,7 @@ button.kpi{cursor:pointer}button.kpi:hover{border-color:var(--red-line)}
     <div style="height:18px"></div>
     <div class="user-card">
       <div class="avatar" id="uAv"></div>
-      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 23/10 · 10h</div></div>
+      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 24/11 · backup completo</div></div>
       <button id="btnSair" title="Sair"></button>
     </div>
   </aside>
@@ -9223,6 +9223,177 @@ function ligarHome(){
 
 /* liga os eventos das telas novas (chamado no fim de cada render) */
 function ligarCG(){ ligarColabs(); ligarCandidatos(); ligarTD(); ligarClima(); ligarFuncoes(); ligarHome(); }
+
+
+/* =========================================================
+   BACKUP COMPLETO · DIRETO NA PASTA DO PC  (versão 24/11)
+   - inclui TODAS as tabelas (cadastro, Forms, candidatos, T&D, clima…)
+   - grava na pasta escolhida (ex.: CENTRAL_RH_ILED\03_BACKUPS)
+     uma subpasta por backup com: JSON (restaurar) + Excel (consultar)
+   - lembra a gestora toda semana; se o Chrome já tiver permissão
+     para a pasta, faz sozinho ao abrir a Central
+   ========================================================= */
+['rh_forms_entrada', ...TB_NOVAS]
+  .forEach(t => { if (!TABELAS_RH.includes(t)) TABELAS_RH.push(t); });
+const BKP_DIAS = 7;
+const BKP_NOMES = { rh_historico:'Histórico', rh_checklists:'Checklists', rh_agenda:'Agenda', rh_aniversarios:'Aniversários',
+  rh_organograma:'Organograma', rh_vagas:'Vagas', rh_solicitacoes:'Pedidos de vaga', rh_ciclos:'Ciclos avaliação',
+  rh_avaliacoes:'Avaliações', rh_forms_entrada:'Respostas Forms', rh_colaboradores:'Colaboradores', rh_candidatos:'Candidatos',
+  rh_treinamentos:'Treinamentos', rh_clima:'Clima' };
+
+// baixa a tabela inteira, de 1000 em 1000 (o Supabase entrega no máximo 1000 por vez)
+async function bkpTodas(t){
+  if (LOCAL) return lsGet(t);
+  const out = [];
+  for (let de = 0; ; de += 1000){
+    const { data, error } = await sb.from(t).select('id,created_at,dados').order('id', { ascending:true }).range(de, de + 999);
+    if (error) throw new Error(t + ': ' + error.message);
+    out.push(...(data || []).map(achatar)); if (!data || data.length < 1000) break;
+  }
+  return out;
+}
+montarBackup = async function(){
+  if (LOCAL) return { sistema:'Central RH ILED', versao:2, gerado_em:new Date().toISOString(), origem:'navegador', ...dadosDoNavegador() };
+  const tabelas = {};
+  for (const t of TABELAS_RH){
+    try { tabelas[t] = await bkpTodas(t); }
+    catch(e){ if (TB_NOVAS.includes(t)) tabelas[t] = await TB.all(t);            // tabela ainda guardada na rh_base
+              else if (/does not exist|schema cache/i.test(e.message)) tabelas[t] = []; else throw e; } }
+  let salarios = {}; if (isMaster()) { try { salarios = await DB.sal(); } catch(e){} }
+  let usuarias = []; if (isMaster()) { try { usuarias = await bkpTodas('rh_perfis'); } catch(e){} }
+  return { sistema:'Central RH ILED', versao:2, gerado_em:new Date().toISOString(), gerado_por:(S.user && S.user.nome) || '',
+           origem:'supabase', projeto:CONFIG.SUPABASE_URL, tabelas, base: await DB.base(), salarios, usuarias };
+};
+
+/* ---------- planilha Excel com uma aba por tabela ---------- */
+function bkpCelula(v){
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'object') v = JSON.stringify(v);
+  v = typeof v === 'string' ? v : v;
+  return typeof v === 'string' && v.length > 32000 ? v.slice(0, 32000) + '…(cortado — completo no JSON)' : v;
+}
+function bkpAba(linhas){
+  const cols = [];
+  linhas.forEach(r => Object.keys(r).forEach(k => { if (!cols.includes(k)) cols.push(k); }));
+  const pri = ['id','created_at','nome'].filter(c => cols.includes(c));
+  const ord = [...pri, ...cols.filter(c => !pri.includes(c))];
+  return [ord, ...linhas.map(r => ord.map(c => bkpCelula(r[c])))];
+}
+async function bkpPlanilha(d){
+  await carregarXLSX();
+  const wb = XLSX.utils.book_new();
+  const resumo = [['CENTRAL RH · ILED — BACKUP'], ['Gerado em', new Date(d.gerado_em).toLocaleString('pt-BR')], ['Gerado por', d.gerado_por || ''], [], ['Tabela', 'Registros']];
+  TABELAS_RH.forEach(t => resumo.push([BKP_NOMES[t] || t, ((d.tabelas || {})[t] || []).length]));
+  resumo.push(['Usuárias', (d.usuarias || []).length], ['Configurações (base)', Object.keys(d.base || {}).length], ['Tabela salarial', Object.keys(d.salarios || {}).length]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumo), 'RESUMO');
+  const usadas = new Set(['RESUMO']);
+  const aba = (nome, linhas) => { let n = String(nome).replace(/[\\\/\?\*\[\]:]/g, ' ').slice(0, 31); while (usadas.has(n)) n = n.slice(0, 29) + '_' + usadas.size; usadas.add(n);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(linhas.length ? bkpAba(linhas) : [['(sem registros)']]), n); };
+  TABELAS_RH.forEach(t => aba(BKP_NOMES[t] || t, (d.tabelas || {})[t] || []));
+  if ((d.usuarias || []).length) aba('Usuárias', d.usuarias);
+  aba('Configurações', Object.entries(d.base || {}).map(([chave, valor]) => ({ chave, valor })));
+  if (Object.keys(d.salarios || {}).length) aba('Tabela salarial', Object.entries(d.salarios).map(([chave, valor]) => ({ chave, valor })));
+  return new Blob([XLSX.write(wb, { type:'array', bookType:'xlsx' })], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+
+/* ---------- pasta do PC (Chrome/Edge no computador) ---------- */
+const bkpPodePasta = () => typeof window.showDirectoryPicker === 'function';
+function bkpIDB(modo, valor){
+  return new Promise((ok, erro) => {
+    const req = indexedDB.open('centralrh_backup', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('cfg');
+    req.onerror = () => erro(req.error);
+    req.onsuccess = () => { const tx = req.result.transaction('cfg', modo === 'set' ? 'readwrite' : 'readonly'), st = tx.objectStore('cfg');
+      const r = modo === 'set' ? st.put(valor, 'pasta') : st.get('pasta'); r.onsuccess = () => ok(r.result); r.onerror = () => erro(r.error); };
+  });
+}
+async function bkpPasta(){ try { return await bkpIDB('get'); } catch(e){ return null; } }
+async function bkpEscolherPasta(){
+  const h = await window.showDirectoryPicker({ id:'centralrh-backup', mode:'readwrite', startIn:'documents' });
+  await bkpIDB('set', h); return h;
+}
+async function bkpPermissao(h, pedir){
+  const o = { mode:'readwrite' };
+  if ((await h.queryPermission(o)) === 'granted') return true;
+  return pedir ? (await h.requestPermission(o)) === 'granted' : false;
+}
+const bkpCarimbo = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`; };
+async function bkpGravarArq(dir, nome, blob){ const f = await dir.getFileHandle(nome, { create:true }); const w = await f.createWritable(); await w.write(blob); await w.close(); }
+
+// faz o backup completo: na pasta escolhida (se houver permissão) ou em Downloads
+async function fazerBackupCompleto(pedirPermissao = true){
+  // a permissão da pasta é pedida ANTES de baixar os dados (o Chrome só pergunta logo após o clique)
+  let h = bkpPodePasta() ? await bkpPasta() : null, okPasta = false;
+  if (h) { try { okPasta = await bkpPermissao(h, pedirPermissao); } catch(e){ okPasta = false; } }
+  const d = await montarBackup(), n = contarDump(d) + (d.usuarias || []).length, c = bkpCarimbo();
+  const json = new Blob([JSON.stringify(d, null, 1)], { type:'application/json' });
+  let xlsx = null; try { xlsx = await bkpPlanilha(d); } catch(e){}
+  let onde = 'Downloads';
+  if (h && okPasta){
+    const sub = await h.getDirectoryHandle(c, { create:true });
+    await bkpGravarArq(sub, `backup-central-rh_${c}.json`, json);
+    if (xlsx) await bkpGravarArq(sub, `backup-central-rh_${c}.xlsx`, xlsx);
+    const resumo = [`CENTRAL RH · ILED — BACKUP DE ${new Date().toLocaleString('pt-BR')}`, `Feito por: ${d.gerado_por || ''}`, '',
+      ...TABELAS_RH.map(t => `${(BKP_NOMES[t] || t).padEnd(20, ' ')} ${((d.tabelas || {})[t] || []).length}`),
+      `${'Usuárias'.padEnd(20, ' ')} ${(d.usuarias || []).length}`, '', `TOTAL: ${n} registro(s)`, '',
+      '.json = cópia exata (use em “Restaurar de um backup”)', '.xlsx = para consultar no Excel'];
+    await bkpGravarArq(sub, 'RESUMO.txt', new Blob(['﻿' + resumo.join('\r\n')], { type:'text/plain' }));
+    onde = h.name + '\\' + c;
+  } else {
+    const baixa = (blob, nome) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+    baixa(json, `backup-central-rh_${c}.json`); if (xlsx) setTimeout(() => baixa(xlsx, `backup-central-rh_${c}.xlsx`), 400);
+  }
+  const reg = { em:new Date().toISOString(), por:(S.user && S.user.nome) || '', registros:n, onde };
+  try { if (!LOCAL) await DB.saveBase({ ultimo_backup:reg }); S.base.ultimo_backup = reg; } catch(e){}
+  try { localStorage.setItem('rhiled_ultimo_backup', JSON.stringify(reg)); } catch(e){}
+  return reg;
+}
+baixarBackup = async function(){ const r = await fazerBackupCompleto(true); return r.registros; };
+
+function bkpUltimo(){ let r = S.base && S.base.ultimo_backup; if (typeof r === 'string') { try { r = JSON.parse(r); } catch(e){ r = null; } }
+  if (!r) { try { r = JSON.parse(localStorage.getItem('rhiled_ultimo_backup') || 'null'); } catch(e){} } return r; }
+const bkpDiasDesde = r => r && r.em ? Math.floor((Date.now() - new Date(r.em).getTime()) / 864e5) : 999;
+
+/* ---------- janela "Backup e nuvem": acrescenta a parte da pasta ---------- */
+const _modalBackupOrig = modalBackup;
+modalBackup = async function(){
+  _modalBackupOrig.apply(this, arguments);
+  const corpo = document.querySelector('#modalRoot .modal-body'); if (!corpo) return;
+  const r = bkpUltimo(), dias = bkpDiasDesde(r), h = bkpPodePasta() ? await bkpPasta() : null;
+  const box = document.createElement('div');
+  box.innerHTML = `<div class="ed-note" style="margin-bottom:14px;${dias >= BKP_DIAS ? 'border-color:#D7141E;background:#FDECEC' : ''}">${ic('shield')}<div>
+      <b>Último backup:</b> ${r ? `${fmtDH(r.em)} · ${esc(r.por || '')} · ${r.registros} registro(s)${dias >= BKP_DIAS ? ` — <b style="color:#D7141E">há ${dias} dia(s), faça o da semana</b>` : ''}` : '<b style="color:#D7141E">nenhum ainda</b>'}<br>
+      <b>Pasta de backups:</b> ${bkpPodePasta() ? (h ? `📁 ${esc(h.name)}` : 'não escolhida — os arquivos vão para Downloads') : 'este navegador não grava em pasta (use o Chrome ou Edge no computador)'}
+      ${bkpPodePasta() ? `<div style="margin-top:8px"><button class="btn btn-ghost" id="bkPasta" style="padding:6px 12px">${ic('dl')}${h ? 'Trocar pasta' : 'Escolher a pasta 03_BACKUPS'}</button></div>` : ''}
+      <div class="small-m" style="margin-top:6px">Cada backup cria uma subpasta com data e hora contendo: <b>.json</b> (restaurar), <b>.xlsx</b> (Excel, uma aba por tabela) e RESUMO.txt. Inclui cadastro de colaboradores, <b>respostas dos Google Forms</b>, vagas, candidatos, avaliações, T&amp;D, clima, salários e usuárias.</div></div></div>`;
+  corpo.prepend(box);
+  const info = t => $('#bkInfo').textContent = t, err = t => $('#bkErr').textContent = t;
+  if ($('#bkPasta')) $('#bkPasta').onclick = async () => { try { const n = await bkpEscolherPasta(); toast('✓ Pasta escolhida: ' + n.name); modalBackup(); } catch(e){ if (e.name !== 'AbortError') err('Erro: ' + (e.message || e)); } };
+  $('#bkBaixar').onclick = async () => { err(''); info('Gerando o backup completo…');
+    try { const x = await fazerBackupCompleto(true); info(`✓ Backup salvo em ${x.onde} (${x.registros} registro(s)).`); toast('✓ Backup salvo'); }
+    catch(e){ info(''); err('Erro: ' + (e.message || e)); } };
+};
+
+/* ---------- lembrete semanal (só a gestora) ---------- */
+async function verificarBackupSemanal(){
+  if (LOCAL || !isMaster()) return;
+  const r = bkpUltimo(); if (bkpDiasDesde(r) < BKP_DIAS) return;
+  const h = bkpPodePasta() ? await bkpPasta() : null;
+  if (h){ try { if (await bkpPermissao(h, false)){ const x = await fazerBackupCompleto(false); toast(`✓ Backup da semana salvo em ${x.onde}`); return; } } catch(e){} }
+  if ($('#modalRoot').innerHTML) return;   // não atrapalha se já houver uma janela aberta
+  modal(`<div class="modal-head"><div class="mi">${ic('shield')}</div><div><h3>Backup da semana</h3><p>${r ? `O último foi em ${fmtDH(r.em)} (há ${bkpDiasDesde(r)} dias).` : 'Ainda não existe nenhum backup.'}</p></div><button class="x"></button></div>
+    <div class="modal-body"><p class="small-m" style="margin-bottom:12px">Leva poucos segundos e guarda <b>tudo</b> da Central${h ? ` na pasta <b>📁 ${esc(h.name)}</b>` : ''}: cadastros, respostas dos Forms, avaliações, vagas, T&amp;D, clima e salários.</p>
+    <button class="btn btn-red" id="bsAgora">${ic('save')}Fazer o backup agora</button> <button class="btn btn-ghost" id="bsDepois">Lembrar amanhã</button>
+    <div class="err" id="bsErr"></div><p class="small-m" id="bsInfo" style="margin-top:8px"></p></div>`, 'sm');
+  $('#bsDepois').onclick = fecharModal;
+  $('#bsAgora').onclick = async () => { $('#bsErr').textContent = ''; $('#bsInfo').textContent = 'Gerando…';
+    try { if (bkpPodePasta() && !h) { try { await bkpEscolherPasta(); } catch(e){ if (e.name === 'AbortError') { $('#bsInfo').textContent = ''; return; } } }
+      const x = await fazerBackupCompleto(true); fecharModal(); toast(`✓ Backup salvo em ${x.onde}`); }
+    catch(e){ $('#bsInfo').textContent = ''; $('#bsErr').textContent = 'Erro: ' + (e.message || e); } };
+}
+const _abrirAppBkp = abrirApp;
+abrirApp = async function(){ const r = await _abrirAppBkp.apply(this, arguments); setTimeout(verificarBackupSemanal, 2500); return r; };
+
 
 iniciar();
 </script>
