@@ -1159,7 +1159,7 @@ button.kpi{cursor:pointer}button.kpi:hover{border-color:var(--red-line)}
     <div style="height:18px"></div>
     <div class="user-card">
       <div class="avatar" id="uAv"></div>
-      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 24/11 · backup completo</div></div>
+      <div><div class="nm" id="uNm"></div><div class="rl" id="uRl"></div><div class="rl" style="opacity:.75;font-size:10.5px">versão 24/11 · backup + arquivo</div></div>
       <button id="btnSair" title="Sair"></button>
     </div>
   </aside>
@@ -9339,6 +9339,8 @@ async function fazerBackupCompleto(pedirPermissao = true){
       '.json = cópia exata (use em “Restaurar de um backup”)', '.xlsx = para consultar no Excel'];
     await bkpGravarArq(sub, 'RESUMO.txt', new Blob(['﻿' + resumo.join('\r\n')], { type:'text/plain' }));
     onde = h.name + '\\' + c;
+    // documentos (gerados + PDFs enviados) vão para _ARQUIVO_DE_DOCUMENTOS — só os novos, sem repetir
+    if (typeof arqBackupPasta === 'function') { try { const nv = await arqBackupPasta(h, d); if (nv) onde += ` + ${nv} documento(s) novo(s) em _ARQUIVO_DE_DOCUMENTOS`; } catch(e){ console.warn(e); } }
   } else {
     const baixa = (blob, nome) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
     baixa(json, `backup-central-rh_${c}.json`); if (xlsx) setTimeout(() => baixa(xlsx, `backup-central-rh_${c}.xlsx`), 400);
@@ -9365,7 +9367,7 @@ modalBackup = async function(){
       <b>Último backup:</b> ${r ? `${fmtDH(r.em)} · ${esc(r.por || '')} · ${r.registros} registro(s)${dias >= BKP_DIAS ? ` — <b style="color:#D7141E">há ${dias} dia(s), faça o da semana</b>` : ''}` : '<b style="color:#D7141E">nenhum ainda</b>'}<br>
       <b>Pasta de backups:</b> ${bkpPodePasta() ? (h ? `📁 ${esc(h.name)}` : 'não escolhida — os arquivos vão para Downloads') : 'este navegador não grava em pasta (use o Chrome ou Edge no computador)'}
       ${bkpPodePasta() ? `<div style="margin-top:8px"><button class="btn btn-ghost" id="bkPasta" style="padding:6px 12px">${ic('dl')}${h ? 'Trocar pasta' : 'Escolher a pasta 03_BACKUPS'}</button></div>` : ''}
-      <div class="small-m" style="margin-top:6px">Cada backup cria uma subpasta com data e hora contendo: <b>.json</b> (restaurar), <b>.xlsx</b> (Excel, uma aba por tabela) e RESUMO.txt. Inclui cadastro de colaboradores, <b>respostas dos Google Forms</b>, vagas, candidatos, avaliações, T&amp;D, clima, salários e usuárias.</div></div></div>`;
+      <div class="small-m" style="margin-top:6px">Cada backup cria uma subpasta com data e hora contendo: <b>.json</b> (restaurar), <b>.xlsx</b> (Excel, uma aba por tabela) e RESUMO.txt. Inclui cadastro de colaboradores, <b>respostas dos Google Forms</b>, vagas, candidatos, avaliações, T&amp;D, clima, salários, usuárias e o <b>Arquivo de documentos</b> (cada documento vira um arquivo em <code>_ARQUIVO_DE_DOCUMENTOS</code>).</div></div></div>`;
   corpo.prepend(box);
   const info = t => $('#bkInfo').textContent = t, err = t => $('#bkErr').textContent = t;
   if ($('#bkPasta')) $('#bkPasta').onclick = async () => { try { const n = await bkpEscolherPasta(); toast('✓ Pasta escolhida: ' + n.name); modalBackup(); } catch(e){ if (e.name !== 'AbortError') err('Erro: ' + (e.message || e)); } };
@@ -9394,6 +9396,209 @@ async function verificarBackupSemanal(){
 const _abrirAppBkp = abrirApp;
 abrirApp = async function(){ const r = await _abrirAppBkp.apply(this, arguments); setTimeout(verificarBackupSemanal, 2500); return r; };
 
+
+
+/* =========================================================
+   ARQUIVO DE DOCUMENTOS  (versão 24/11)
+   1) toda vez que a Central gera um documento para imprimir/PDF,
+      uma cópia fica guardada em rh_documentos (dá para reabrir e
+      imprimir de novo, igualzinho)
+   2) botão para ENVIAR PDFs que já existem (ficam no Storage)
+   3) o backup semanal leva tudo para a pasta do PC
+   Documentos gerados ou enviados pela gestora ficam "só a gestora"
+   (podem ter valores) — ela libera para a equipe se quiser.
+   ========================================================= */
+if (!TABELAS_RH.includes('rh_documentos')) TABELAS_RH.push('rh_documentos');
+BKP_NOMES.rh_documentos = 'Documentos';
+const ARQ_BUCKET = 'rh-arquivos';
+const ARQ_CATS = ['Admissão','Desligamento','Avaliação','Termo / declaração','Relatório','Treinamento','Recrutamento','Outros'];
+let ARQ_REIMP = false, _arqUlt = { k:'', t:0 }, ARQ_SEM_TABELA = false;
+const arqDecod = t => String(t || '').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').trim();
+const arqLimpaNome = n => String(n || 'arquivo').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.\- ]+/g, '_').replace(/\s+/g, '_').slice(0, 90);
+const arqTam = b => b > 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+function arqCategoria(t){ t = normTxt(t).toLowerCase();
+  if (/avalia|feedback|pdi|9.?box|desempenho|experiencia/.test(t)) return 'Avaliação';
+  if (/admiss|contrata|ficha de registro|onboarding/.test(t)) return 'Admissão';
+  if (/deslig|rescis|aviso previo|demiss|entrevista de saida/.test(t)) return 'Desligamento';
+  if (/termo|declara|autoriza|advert|suspens|comunicado/.test(t)) return 'Termo / declaração';
+  if (/treina|certificad|capacita|lista de presenca/.test(t)) return 'Treinamento';
+  if (/vaga|candidat|entrevista|selec|requisi/.test(t)) return 'Recrutamento';
+  return 'Relatório'; }
+
+// 1) guarda a cópia de todo documento que vai para impressão/PDF
+async function arqGuardarGerado(html){
+  try {
+    if (!S.user || ARQ_SEM_TABELA) return;
+    const m = /<title>([\s\S]*?)<\/title>/i.exec(html), titulo = arqDecod(m ? m[1] : '') || 'Documento';
+    const k = titulo + '|' + html.length; if (_arqUlt.k === k && Date.now() - _arqUlt.t < 60000) return; _arqUlt = { k, t:Date.now() };
+    const r = await DB.insert('rh_documentos', { titulo, origem:'gerado', categoria:arqCategoria(titulo), html, tamanho:html.length,
+      restrito:isMaster(), por:quem(), por_id:S.user.id, em:new Date().toISOString() });
+    if (S.docsArq) S.docsArq.unshift({ ...r, html:undefined });
+  } catch(e){ if (/does not exist|schema cache/i.test(e.message || '')) ARQ_SEM_TABELA = true; console.warn('arquivo de documentos:', e.message || e); }
+}
+// o documento de impressão vive dentro de um iframe (outra "janela"): o gancho é posto no iframe na hora em que ele é criado
+function arqGancho(fr){
+  try {
+    const w = fr.contentWindow; if (!w || w.__arqOk) return; w.__arqOk = true;
+    const proto = w.Document.prototype, orig = proto.write;
+    proto.write = function(...a){
+      try { const h = a.join(''); if (!ARQ_REIMP && /width:0/.test((fr.style.cssText || '').replace(/\s/g, '')) && /^\s*<!DOCTYPE html>/i.test(h) && /<title>/i.test(h)) arqGuardarGerado(h); } catch(e){}
+      return orig.apply(this, a);
+    };
+  } catch(e){}
+}
+const _arqAppend = Node.prototype.appendChild;
+Node.prototype.appendChild = function(c){ const r = _arqAppend.call(this, c); if (c && c.tagName === 'IFRAME') arqGancho(c); return r; };
+
+// 2) lista (sem o conteúdo pesado), abrir, enviar, excluir
+async function arqCarregar(){
+  if (LOCAL){ S.docsArq = lsGet('rh_documentos').map(d => ({ ...d, html:undefined })).sort((a,b) => (b.em||b.created_at||'').localeCompare(a.em||a.created_at||'')); return; }
+  const campos = ['titulo','origem','categoria','colaborador','tamanho','restrito','por','em','caminho','arquivo','tipo_arq'];
+  const out = [];
+  for (let de = 0; ; de += 1000){
+    const { data, error } = await sb.from('rh_documentos').select('id,created_at,' + campos.map(c => `${c}:dados->>${c}`).join(',')).order('created_at', { ascending:false }).range(de, de + 999);
+    if (error) throw error; out.push(...(data || [])); if (!data || data.length < 1000) break;
+  }
+  S.docsArq = out.map(d => ({ ...d, restrito:d.restrito === 'true', tamanho:+d.tamanho || 0 }));
+}
+async function arqHTML(id){
+  if (LOCAL){ const d = lsGet('rh_documentos').find(x => x.id === id); return d && d.html; }
+  const { data, error } = await sb.from('rh_documentos').select('html:dados->>html').eq('id', id).maybeSingle(); if (error) throw error; return data && data.html;
+}
+async function arqAbrir(d, imprimir){
+  if (d.origem === 'enviado'){
+    const { data, error } = await sb.storage.from(ARQ_BUCKET).createSignedUrl(d.caminho, 600, imprimir ? { download:d.arquivo || true } : undefined);
+    if (error) throw error; window.open(data.signedUrl, '_blank'); return;
+  }
+  const html = await arqHTML(d.id); if (!html) throw new Error('Documento sem conteúdo');
+  const w = window.open('', '_blank'); if (!w) throw new Error('O navegador bloqueou a janela. Permita pop-ups para a Central.');
+  ARQ_REIMP = true; try { w.document.open(); w.document.write(html); w.document.close(); } finally { ARQ_REIMP = false; }
+  if (imprimir) setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 800);
+}
+async function arqEnviar(files, cat, colab, restrito, aoAvancar){
+  let ok = 0; const erros = [];
+  for (const f of files){
+    try {
+      if (f.size > 25 * 1048576) throw new Error('maior que 25 MB');
+      const d = new Date(), caminho = `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${uuid().slice(0,8)}_${arqLimpaNome(f.name)}`;
+      const { error } = await sb.storage.from(ARQ_BUCKET).upload(caminho, f, { contentType:f.type || 'application/pdf', upsert:false });
+      if (error) throw error;
+      const r = await DB.insert('rh_documentos', { titulo:f.name.replace(/\.[^.]+$/, ''), arquivo:f.name, origem:'enviado', categoria:cat, colaborador:colab || '',
+        caminho, tamanho:f.size, tipo_arq:f.type || '', restrito, por:quem(), por_id:S.user.id, em:new Date().toISOString() });
+      (S.docsArq = S.docsArq || []).unshift(r); ok++; if (aoAvancar) aoAvancar(ok, files.length);
+    } catch(e){ erros.push(`${f.name}: ${e.message || e}`); }
+  }
+  return { ok, erros };
+}
+async function arqExcluir(d){
+  if (d.origem === 'enviado' && d.caminho){ const { error } = await sb.storage.from(ARQ_BUCKET).remove([d.caminho]); if (error) throw error; }
+  await DB.remove('rh_documentos', d.id); S.docsArq = (S.docsArq || []).filter(x => x.id !== d.id);
+}
+
+// 3) janela "Arquivo de documentos"
+const ARQ_F = { q:'', origem:'', cat:'' };
+async function modalArquivo(){
+  modal(`<div class="modal-head"><div class="mi">${ic('doc')}</div><div><h3>Arquivo de documentos</h3><p>Tudo o que a Central gerou para imprimir/PDF e os PDFs enviados. Tudo entra no backup semanal.</p></div><button class="x"></button></div>
+    <div class="modal-body" id="arqCorpo"><p class="small-m">Carregando…</p></div>`, 'xl');
+  try { await arqCarregar(); } catch(e){
+    $('#arqCorpo').innerHTML = `<div class="ed-note" style="border-color:#D7141E;background:#FDECEC">${ic('shield')}<div><b>O Arquivo de documentos ainda não foi ligado no banco.</b><br>Rode no Supabase (SQL Editor) o arquivo <code>ADICIONAL_ARQUIVO_DE_DOCUMENTOS_24-11-2026.sql</code> da pasta 02_BANCO_DE_DADOS_SUPABASE e abra esta janela de novo.<br><small>${esc(e.message || e)}</small></div></div>`; return; }
+  arqDesenhar();
+}
+function arqDesenhar(){
+  const el = $('#arqCorpo'); if (!el) return;
+  const t = normTxt(ARQ_F.q || ''), lista = (S.docsArq || []).filter(d =>
+    (!ARQ_F.origem || d.origem === ARQ_F.origem) && (!ARQ_F.cat || d.categoria === ARQ_F.cat) &&
+    (!t || normTxt([d.titulo, d.colaborador, d.por, d.arquivo].join(' ')).includes(t)));
+  const ger = (S.docsArq || []).filter(d => d.origem === 'gerado').length, env = (S.docsArq || []).length - ger;
+  el.innerHTML = `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <input id="arqQ" placeholder="Buscar por documento, colaborador ou quem emitiu…" value="${esc(ARQ_F.q)}" style="flex:1;min-width:240px">
+      <select id="arqO"><option value="">Todos (${(S.docsArq||[]).length})</option><option value="gerado" ${ARQ_F.origem==='gerado'?'selected':''}>Gerados pela Central (${ger})</option><option value="enviado" ${ARQ_F.origem==='enviado'?'selected':''}>PDFs enviados (${env})</option></select>
+      <select id="arqC"><option value="">Todas as categorias</option>${ARQ_CATS.map(c => `<option ${ARQ_F.cat===c?'selected':''}>${c}</option>`).join('')}</select>
+      ${LOCAL ? '' : `<button class="btn btn-red" id="arqUp">${ic('upload')}Enviar PDFs</button>`}
+    </div>
+    ${lista.length ? `<div style="overflow:auto"><table class="tbl" style="width:100%;border-collapse:collapse;font-size:13.5px">
+      <thead><tr style="background:#1B1B1F;color:#fff;text-align:left"><th style="padding:9px 10px">Data</th><th style="padding:9px 10px">Documento</th><th style="padding:9px 10px">Categoria</th><th style="padding:9px 10px">Colaborador</th><th style="padding:9px 10px">Origem</th><th style="padding:9px 10px">Por</th><th style="padding:9px 10px;text-align:right">Ações</th></tr></thead>
+      <tbody>${lista.slice(0, 400).map(d => `<tr style="border-bottom:1px solid #eee">
+        <td style="padding:8px 10px;white-space:nowrap">${fmtDH(d.em || d.created_at)}</td>
+        <td style="padding:8px 10px"><b>${esc(d.titulo)}</b>${d.restrito ? ' <span title="Só a gestora vê" style="font-size:11px;background:#FDECEC;color:#D7141E;border-radius:6px;padding:1px 6px">🔒 só gestora</span>' : ''}<br><small style="color:#888">${arqTam(d.tamanho || 0)}</small></td>
+        <td style="padding:8px 10px">${isMaster() ? `<select data-arqcat="${d.id}" style="padding:4px 6px">${ARQ_CATS.map(c => `<option ${d.categoria===c?'selected':''}>${c}</option>`).join('')}</select>` : esc(d.categoria || '')}</td>
+        <td style="padding:8px 10px">${esc(d.colaborador || '')}</td>
+        <td style="padding:8px 10px">${d.origem === 'enviado' ? '📎 Enviado' : '🖨️ Gerado'}</td>
+        <td style="padding:8px 10px">${esc(d.por || '')}</td>
+        <td style="padding:8px 10px;text-align:right;white-space:nowrap">
+          <button class="btn btn-ghost" data-arqver="${d.id}" style="padding:5px 10px">Abrir</button>
+          <button class="btn btn-ghost" data-arqimp="${d.id}" style="padding:5px 10px">${d.origem === 'enviado' ? 'Baixar' : 'Imprimir/PDF'}</button>
+          ${isMaster() ? `<button class="btn btn-ghost" data-arqlib="${d.id}" style="padding:5px 10px" title="${d.restrito ? 'Liberar para a equipe' : 'Deixar só para a gestora'}">${d.restrito ? '🔓' : '🔒'}</button>
+          <button class="btn btn-ghost" data-arqdel="${d.id}" style="padding:5px 10px;color:#D7141E">Excluir</button>` : ''}</td></tr>`).join('')}</tbody></table></div>
+      ${lista.length > 400 ? `<p class="small-m">Mostrando 400 de ${lista.length}. Use a busca para achar os demais.</p>` : ''}`
+    : `<div class="ed-note">${ic('doc')}<div>Nenhum documento ${ARQ_F.q || ARQ_F.origem || ARQ_F.cat ? 'com esse filtro' : 'ainda'}. A partir de agora, todo documento que a Central gerar para imprimir/PDF aparece aqui sozinho.</div></div>`}
+    <div class="err" id="arqErr"></div><p class="small-m" id="arqInfo"></p>`;
+  const achar = id => (S.docsArq || []).find(x => x.id === id), err = m => $('#arqErr').textContent = m;
+  $('#arqQ').oninput = e => { ARQ_F.q = e.target.value; clearTimeout(window._arqT); window._arqT = setTimeout(() => { arqDesenhar(); const q = $('#arqQ'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 250); };
+  $('#arqO').onchange = e => { ARQ_F.origem = e.target.value; arqDesenhar(); };
+  $('#arqC').onchange = e => { ARQ_F.cat = e.target.value; arqDesenhar(); };
+  el.querySelectorAll('[data-arqver]').forEach(b => b.onclick = async () => { try { await arqAbrir(achar(b.dataset.arqver), false); } catch(e){ err('Erro: ' + (e.message || e)); } });
+  el.querySelectorAll('[data-arqimp]').forEach(b => b.onclick = async () => { try { await arqAbrir(achar(b.dataset.arqimp), true); } catch(e){ err('Erro: ' + (e.message || e)); } });
+  el.querySelectorAll('[data-arqcat]').forEach(s => s.onchange = async () => { try { await DB.update('rh_documentos', s.dataset.arqcat, { categoria:s.value }); achar(s.dataset.arqcat).categoria = s.value; toast('Categoria alterada'); } catch(e){ err('Erro: ' + (e.message || e)); } });
+  el.querySelectorAll('[data-arqlib]').forEach(b => b.onclick = async () => { const d = achar(b.dataset.arqlib);
+    try { await DB.update('rh_documentos', d.id, { restrito:!d.restrito }); d.restrito = !d.restrito; arqDesenhar(); toast(d.restrito ? '🔒 Só a gestora vê' : '🔓 Liberado para a equipe'); } catch(e){ err('Erro: ' + (e.message || e)); } });
+  el.querySelectorAll('[data-arqdel]').forEach(b => b.onclick = async () => { const d = achar(b.dataset.arqdel);
+    if (!confirm(`Excluir "${d.titulo}" do arquivo?\n\nO que já foi para a pasta de backups continua lá.`)) return;
+    try { await arqExcluir(d); arqDesenhar(); toast('Documento excluído'); } catch(e){ err('Erro: ' + (e.message || e)); } });
+  if ($('#arqUp')) $('#arqUp').onclick = () => {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.multiple = true; inp.accept = '.pdf,application/pdf,image/*,.doc,.docx,.xls,.xlsx';
+    inp.onchange = () => { if (inp.files.length) arqModalEnvio([...inp.files]); }; inp.click(); };
+}
+function arqModalEnvio(files){
+  const nomes = (S.colabs || []).map(c => c.nome).filter(Boolean).sort();
+  const box = document.createElement('div');
+  box.innerHTML = `<div class="ed-note" style="margin-bottom:12px">${ic('upload')}<div><b>${files.length} arquivo(s) selecionado(s)</b> — ${esc(files.map(f => f.name).slice(0, 4).join(', '))}${files.length > 4 ? '…' : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <label>Categoria<br><select id="aeCat" style="width:100%">${ARQ_CATS.map(c => `<option>${c}</option>`).join('')}</select></label>
+      <label>Colaborador (opcional)<br><input id="aeCol" list="aeColL" style="width:100%" placeholder="Nome do colaborador"><datalist id="aeColL">${nomes.map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
+    </div>
+    ${isMaster() ? '<label style="display:block;margin-top:8px"><input type="checkbox" id="aeRes" checked> 🔒 Só a gestora vê (desmarque para liberar à equipe)</label>' : ''}
+    <div style="margin-top:10px"><button class="btn btn-red" id="aeOk">${ic('upload')}Enviar agora</button> <button class="btn btn-ghost" id="aeNao">Cancelar</button></div></div></div>`;
+  const corpo = $('#arqCorpo'); corpo.prepend(box);
+  $('#aeNao').onclick = () => box.remove();
+  $('#aeOk').onclick = async () => { $('#aeOk').disabled = true;
+    const r = await arqEnviar(files, $('#aeCat').value, $('#aeCol').value.trim(), isMaster() ? $('#aeRes').checked : false, (n, t) => { $('#arqInfo').textContent = `Enviando… ${n} de ${t}`; });
+    arqDesenhar(); toast(`✓ ${r.ok} arquivo(s) guardado(s)`);
+    if (r.erros.length) $('#arqErr').textContent = 'Não foram: ' + r.erros.join(' · '); };
+}
+
+// botão no topo (ao lado do escudo de backup)
+(() => { const bk = $('#topBkp'); if (!bk || $('#topArq')) return;
+  const b = document.createElement('button'); b.className = 'sq'; b.id = 'topArq'; b.title = 'Arquivo de documentos (PDFs)'; b.innerHTML = ic('doc');
+  b.onclick = modalArquivo; bk.parentNode.insertBefore(b, bk); })();
+
+// 4) backup: a planilha não leva o conteúdo pesado; a pasta do PC recebe os arquivos
+const _bkpAbaArq = bkpAba;
+bkpAba = linhas => _bkpAbaArq(linhas.map(r => { if (!r || r.html === undefined) return r; const { html, ...o } = r; return o; }));
+async function arqBackupPasta(raiz, d){
+  const base = await raiz.getDirectoryHandle('_ARQUIVO_DE_DOCUMENTOS', { create:true });
+  const existe = async (dir, nome) => { try { await dir.getFileHandle(nome); return true; } catch(e){ return false; } };
+  const pastaMes = async (sub, quando) => { const p = await base.getDirectoryHandle(sub, { create:true }); const dt = new Date(quando || Date.now());
+    return p.getDirectoryHandle(`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`, { create:true }); };
+  let novos = 0;
+  for (const doc of ((d.tabelas || {}).rh_documentos || [])){
+    const quando = doc.em || doc.created_at, dt = new Date(quando || Date.now()), dia = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    try {
+      if (doc.origem === 'enviado' && doc.caminho && !LOCAL){
+        const dir = await pastaMes('pdfs_enviados', quando), nome = `${dia}_${arqLimpaNome(doc.arquivo || doc.titulo)}`.slice(0, 120);
+        if (await existe(dir, nome)) continue;
+        const { data, error } = await sb.storage.from(ARQ_BUCKET).download(doc.caminho); if (error) throw error;
+        await bkpGravarArq(dir, nome, data); novos++;
+      } else if (doc.html){
+        const dir = await pastaMes('gerados_pela_central', quando), nome = `${dia}_${arqLimpaNome(doc.titulo)}_${String(doc.id).slice(0, 6)}.html`;
+        if (await existe(dir, nome)) continue;
+        await bkpGravarArq(dir, nome, new Blob([doc.html], { type:'text/html' })); novos++;
+      }
+    } catch(e){ console.warn('backup do arquivo', doc.titulo, e); }
+  }
+  return novos;
+}
 
 iniciar();
 </script>
