@@ -1,20 +1,60 @@
-name: Manter Supabase acordado
+# =====================================================================
+#  CENTRAL RH · ILED — MANTER O SUPABASE ACORDADO 24h
+#
+#  O plano gratuito do Supabase PAUSA o projeto depois de 7 dias sem uso.
+#  Este robô do GitHub "cutuca" o banco 2 vezes por dia (função rh_ping),
+#  então a Central nunca fica 7 dias parada.
+#
+#  Ele também grava o arquivo STATUS-PING.md no repositório. Isso serve
+#  para 2 coisas: você vê a última vez que ele rodou, e o GitHub não
+#  desliga o robô (o GitHub desliga robôs de repositórios parados há 60 dias).
+#
+#  Se o ping falhar, o GitHub manda um e-mail de aviso para a conta dona
+#  do repositório. Recebeu esse e-mail? Abra o Supabase e confira.
+# =====================================================================
+name: Manter Central RH acordada
 
-# Todo dia, às 7h (horário de Brasília), chama a função rh_ping da Central RH.
-# Isso conta como uso do banco e impede o Supabase gratuito de pausar o projeto.
 on:
   schedule:
-    - cron: "0 10 * * *"   # 10h UTC = 7h em Brasília
-  workflow_dispatch:        # permite rodar na mão pelo botão "Run workflow"
+    - cron: "17 11 * * *"   # 08:17 em Brasília
+    - cron: "47 22 * * *"   # 19:47 em Brasília
+  workflow_dispatch:        # botão "Run workflow" para testar na hora
+
+permissions:
+  contents: write
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    env:
+      # Endereço e chave PÚBLICA do Supabase da Central (as mesmas que estão no site/index.html).
+      # Se um dia trocar de Supabase, troque estas duas linhas também.
+      SUPABASE_URL: https://pgvwnpzdauxuxiwrcist.supabase.co
+      SUPABASE_KEY: sb_publishable_xnBj6OooIMvUDvPqITxZ8g_B0u9q__3
     steps:
-      - name: Chamar a Central RH
+      - uses: actions/checkout@v4
+
+      - name: Cutucar o banco (rh_ping)
         run: |
-          curl --fail --silent --show-error \
-            "https://pgvwnpzdauxuxiwrcist.supabase.co/rest/v1/rpc/rh_ping" \
-            -H "apikey: sb_publishable_xnBj6OooIMvUDvPqITxZ8g_B0u9q__3"
-          echo ""
-          echo "✅ Supabase acordado"
+          for tentativa in 1 2 3; do
+            RESP=$(curl -sS -m 30 -w "\n%{http_code}" -X POST "$SUPABASE_URL/rest/v1/rpc/rh_ping" \
+              -H "apikey: $SUPABASE_KEY" -H "Authorization: Bearer $SUPABASE_KEY" \
+              -H "Content-Type: application/json" -d '{}') || true
+            CODIGO=$(echo "$RESP" | tail -n1)
+            CORPO=$(echo "$RESP" | head -n -1)
+            echo "Tentativa $tentativa → HTTP $CODIGO → $CORPO"
+            if [ "$CODIGO" = "200" ]; then echo "RESULTADO=$CORPO" >> $GITHUB_ENV; exit 0; fi
+            sleep 20
+          done
+          echo "::error::A Central RH não respondeu. Abra o Supabase e veja se o projeto está pausado."
+          exit 1
+
+      - name: Registrar no STATUS-PING.md
+        run: |
+          AGORA=$(TZ=America/Sao_Paulo date '+%d/%m/%Y %H:%M')
+          printf "# Central RH · último ping\n\n- Quando: **%s** (Brasília)\n- Resposta do banco: \`%s\`\n\nEste arquivo é atualizado sozinho pelo robô *Manter Central RH acordada*.\n" "$AGORA" "$RESULTADO" > STATUS-PING.md
+          git config user.name  "robo-central-rh"
+          git config user.email "robo-central-rh@users.noreply.github.com"
+          git add STATUS-PING.md
+          git commit -m "ping: $AGORA" || echo "nada para gravar"
+          git push || echo "não consegui gravar o status (o ping já foi feito)"
