@@ -1,6 +1,6 @@
 # Central RH · último ping
 
-- Quando: **27/11/2026 16:58** (Brasília)
-- Resposta do banco: `"ok · 2 · 27/11/2026 16:58"`
+- Quando: **28/11/2026 01:17** (Brasília)
+- Resposta do banco: `"ok · 2 · 28/11/2026 01:17"`
 
 Este arquivo é atualizado sozinho pelo robô *Manter Central RH acordada*.
